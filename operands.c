@@ -205,7 +205,7 @@ int valid_method_for_operand(int modeflags, ADR_METHOD method) {
  /* I tried to make the method less complicated */
 /* we read the rest of the line (word by word) with linep and getNextToken 
 and then save the operands in a strings array, then check if their legal */
-int check_operands(opcode_table_data *opcode, char * linep, int lineNum)
+int check_operands(opcode_item *opcode, char * linep, int lineNum)
 {
     char operands[MAX_NUM_OPERANDS][MAX_SYMBOL_SIZE]; /* should not be more than 2 operands but check for overlap */
     int position = 0;
@@ -319,7 +319,7 @@ int check_operation(char *opcode_word, char* rest_of_line, int line_num)
         s++;
     }
     buffer[++len] = '\0'; /* Make sure the string is terminated */
-    opcode_table_data* opcode_data;
+    opcode_item* opcode_data;
     if ((opcode_data = opcode_lookup(opcode_word)) != NULL)
     {
         int operands = check_operands(opcode_data, rest_of_line, line_num);
