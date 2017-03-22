@@ -110,6 +110,7 @@ int file_pass(FILE *file, int pass_number)
 		if (len > MAX_LINE)
 		{
 			printf("Line number %d is too long \n", line_num);
+			error_count++;
 			continue;
 		}
 		if (len > 0 && line[len-1] == EOF) /* so we don't have to deal with EOF all the time */
