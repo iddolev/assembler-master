@@ -35,11 +35,12 @@ int opcode_add(char *name,
         data->group = group;
         data->addressing_mode.src = addressing_mode_src;
         data->addressing_mode.dst = addressing_mode_dst;
-        if (!hash_table_add(&opcode_table, name, data)) {
-            free(data);
-            return 0;
-        }
-        return 1;
+	if (!hash_table_add(&opcode_table, name, data))
+	{
+		free(data);
+		return 0;
+	}
+	return 1;
 }
 
 /* opcode_table_init: Add all the opcodes to the opcode table. Returns 0 on failure, or number of opcodes on success */

@@ -1,3 +1,3 @@
-test_various: test_opcodes.c main_data.c instructions.c operands.c opcodes.c symbol_table.c hash_table.c utils.c defs.c
+test_various: test_various.c main_data.c instructions.c operands.c opcodes.c symbol_table.c hash_table.c utils.c defs.c
 	gcc -o test_various test_various.c main_data.c instructions.c operands.c opcodes.c symbol_table.c hash_table.c utils.c defs.c -I. -pedantic -Wall -Werror -ansi
 

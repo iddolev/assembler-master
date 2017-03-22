@@ -44,16 +44,23 @@ void test_is_label()
 	}
 }
 
-void test_getDataOp()
+void test_getDataOp_str(char *s)
 {
 	int ret;
-	char *s = "  5, -3  ,7  ,  -88  ";
 	init_main_data();
 	printf("Testing getDataOp(\"%s\")\n", s); 
 	ret = getDataOp(s, 1);
 	printf("ret = %d\n", ret);
 	print_main_data();
 	reset_main_data();
+}
+
+void test_getDataOp()
+{
+	test_getDataOp_str("  5, -3  ,7  ,   8,4  ,+6  ,  -88  ");
+	test_getDataOp_str("5 3");
+	test_getDataOp_str("5 x");
+	test_getDataOp_str("");
 }
 
 void nl()
