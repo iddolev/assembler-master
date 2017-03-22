@@ -32,6 +32,11 @@ int getDataOp(char * linep, int lineNum)
 	while (*linep != '\n')
 		{
 			linep = getNextToken(linep, nextWord);
+			if (!linep)
+			{
+				printf("Missing oprands for '.data' at line %d \n", lineNum);
+				return 0;
+			}
 			if (is_number(nextWord))
 			{
 				MAIN_DATA.DATA_SECTION[MAIN_DATA.DC] = atoi(nextWord);
@@ -44,21 +49,22 @@ int getDataOp(char * linep, int lineNum)
 			}
 			else
 			{
-				printf("At line %d illegal operand for '.data' \n", lineNum);
+				printf("At line %d illegal operand \"%s\" for '.data' \n", lineNum, nextWord);
+				return 0;
 			}
 			/* now check legal nextWord, and update MAIN_DATA.DC */
 			while (is_whitespace(*linep))
 			{
 				linep++; /*skip blank lines and stuff*/
 			}
-			if (*linep == '\n')
+			if (*linep == '\n' || *linep == '\0')
 			{
 				/* we successfully finished scanning the data section so move to next line */
 				return 1; 
 			}
 			if (*linep != ',')
 			{
-				/*printf error*/
+				printf("Missing comma at line %d \n", lineNum);
 				return 0;   /* continue to next line: no point in continuing to make sense of the corrupt data section*/
 			}
 			else

@@ -51,15 +51,19 @@ void test_getDataOp_str(char *s)
 	printf("Testing getDataOp(\"%s\")\n", s); 
 	ret = getDataOp(s, 1);
 	printf("ret = %d\n", ret);
-	print_main_data();
+	if (ret)
+		print_main_data();
 	reset_main_data();
 }
 
 void test_getDataOp()
 {
+	test_getDataOp_str("5 ");
 	test_getDataOp_str("  5, -3  ,7  ,   8,4  ,+6  ,  -88  ");
 	test_getDataOp_str("5 3");
-	test_getDataOp_str("5 x");
+	test_getDataOp_str("5 , x");
+	test_getDataOp_str("5 , ");
+	test_getDataOp_str(" ");
 	test_getDataOp_str("");
 }
 
