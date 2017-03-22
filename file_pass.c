@@ -95,7 +95,7 @@ int second_pass_ee_command(OP_TYPE type, char *line)
 /* pass_number should be 1 or 2 */
 int file_pass(FILE *file, int pass_number)
 {
-	int i = 0, lineNum = -1, symbolFlag = 0;
+	int i = 0, line_num = -1, symbolFlag = 0;
 	char * linep, op;
 	char nextWord[MAX_LINE+2]; /*+2 for the '\n' and '\0' char*/
 	char label[MAX_LABEL_SIZE+1];
@@ -103,10 +103,16 @@ int file_pass(FILE *file, int pass_number)
 	OP_TYPE type;
 	char line[MAX_LINE+2]; /*+2 for the '\n' and '\0' char*/
 
-	while (linep = fgets(line, MAX_LINE+1, file))
+	while (linep = fgets(line, MAX_LINE+10, file))
 	{
-		lineNum++;     /* we started with lineNum == -1 */
+		line_num++;     /* we started with lineNum == -1 */
 		len = strlen(line);
+		if (len > MAX_LINE)
+		{
+			printf("Line number %d is too long \n", line_num);
+			error_count++;
+			continue;
+		}
 		if (len > 0 && line[len-1] == EOF) /* so we don't have to deal with EOF all the time */
 		{
 			line[len-1] = '\n';
