@@ -1,0 +1,3 @@
+test_opcodes: test_opcodes.c opcodes.c hash_table.c utils.c
+	gcc -o test_opcodes test_opcodes.c opcodes.c hash_table.c utils.c -I. -pedantic -Wall -Werror -ansi
+
