@@ -7,14 +7,14 @@
 #include "defs.h"
 
 /* strdup: Duplicate a string. Identical to the POSIX library function with the same name */
-char *strdup(const char* s) {
-    char *new = malloc(strlen(s) + 1);
-    if (new == NULL)
-      return NULL;
-    strcpy(new, s);
-    return new;
+char *strdup(const char* s) 
+{
+	char *new = malloc(strlen(s) + 1);
+	if (new == NULL)
+		return NULL;
+	strcpy(new, s);
+	return new;
 }
-
 
 /* Open file filename with mode, and print error if failure. Returns pointer to file (or NULL if failed) */
 FILE* open_file(char *filename, char *mode)
@@ -27,15 +27,16 @@ FILE* open_file(char *filename, char *mode)
 	return f;
 }
 
-
 /* Check if a string is made of only English alphabetic characters. Like isalpha() but for a string instead of a char. */
-int isalpha_string(char* string) {
-    int i;
-    for (i=0; i<strlen(string); i++) {
-        if (!isalpha(string[i]))
-            return 0;
-    }
-    return 1;
+int isalpha_string(char* string) 
+{
+	int i;
+	for (i=0; i<strlen(string); i++) 
+	{
+		if (!isalpha(string[i]))
+		return 0;
+	}
+	return 1;
 }
 
 /* a simplyfied function. there is no need to check for whitespaces, because 'getNextToken' does that */
@@ -56,10 +57,7 @@ int is_number(char* str)
 			}
 			return 1;
 		}
-		else
-		{
-			return 0;
-		}
+		return 0;
 	}
 	return 0;
 }
@@ -67,22 +65,21 @@ int is_number(char* str)
 /* return 1 if char is a whitespace, otherwise 0 */
 int is_whitespace(char c)
 {
-    return c == ' ' || c == '\t';
+	return c == ' ' || c == '\t';
 }
 
 /* A char version of atoi(), because atoi() is for strings. Return 0 when the char is not a legal digit */
-int c_atoi(char c) {
-    if (!isdigit(c))
-        return 0; /* Return 0 if it's not a digit */
-    return c - 48; /* 48 = ASCII for 0 */
+int c_atoi(char c) 
+{
+	if (!isdigit(c))
+		return 0; /* Return 0 if it's not a digit */
+	return c - '\0';  
 }
 
 /* Check if char c is a token separator */
-int is_separator(char c) {
-    return c == '\n' ||
-           c == '\0' ||
-           c == ':'  ||
-           c == ',';
+int is_separator(char c) 
+{
+	return c == '\n' || c == '\0' || c == ':'  || c == ',';
 }
 
 /* Read next word from linep into buffer.
@@ -139,5 +136,3 @@ int push_to_encoding(int current, int to_add, int num_bits)
 	result += to_add;
 	return result;
 }
-
-
