@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "utils.h"
 #include "instructions.h"
 #include "opcodes.h"
@@ -72,17 +73,37 @@ void nl()
 	printf("\n");
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+	int code;
+
+	if (argc == 1)
+	{
+		printf("Usage: %s <code>\n", argv[0]);
+		printf("1: test getNextToken\n");
+		printf("2: test is_label\n");
+		printf("3: test getDataOp\n");
+		return 0;
+	}
+
 	opcode_table_init();
 
-	test_getNextToken();
-	nl();
-	test_is_label();
-	nl();
-	test_getDataOp();
-	nl();
+	code = atoi(argv[1]);
 
+	switch (code)
+	{
+		case 1:
+			test_getNextToken();
+			break;
+		case 2:
+			test_is_label();
+			break;
+		case 3:
+			test_getDataOp();
+			break;
+		default:
+			printf("Illegal code\n");
+	}
 	return 0;
 }
 
