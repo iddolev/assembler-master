@@ -7,6 +7,7 @@
 #include "opcodes.h"
 #include "utils.h"
 #include "instructions.h"
+#include "externs.h"
 
 #define MAX_NUM_OPERANDS 2 /* Maximum number of operands in command */
 
@@ -137,6 +138,7 @@ int check_operands(opcode_item *opcode, char * linep, int lineNum)
                 dstAdr =find_addressing_method(operands[0]);
                 if (valid_method_for_operand(opcode->addressing_mode.dst, dstAdr))
                 {
+		    MAIN_DATA.IC += 2;
                     return 1;
                 }
                 else
@@ -151,6 +153,13 @@ int check_operands(opcode_item *opcode, char * linep, int lineNum)
                 dstAdr =find_addressing_method(operands[1]);
                 if (valid_method_for_operand(opcode->addressing_mode.src, srcAdr) && valid_method_for_operand(opcode->addressing_mode.dst, dstAdr))
                 {
+		    if (srcAdr == D_REGISTER)
+		    {
+			if (dstAdr == D_REGISTER)
+				MAIN_DATA.IC += 2;
+				return 1;
+		    }
+		    MAIN_DATA.IC += 3;
                     return 1;
                 }
                 else
@@ -160,6 +169,7 @@ int check_operands(opcode_item *opcode, char * linep, int lineNum)
                 }
             }
         }
+	MAIN_DATA.IC += 1;
         return 1; /* no operands given for the given method as needed (i.e 'stop') */
     }
     else
