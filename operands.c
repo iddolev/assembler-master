@@ -38,6 +38,7 @@ int checkImmediate(char * s)
 ADR_METHOD find_addressing_method(char *s)/* to do: add lineNum*/
 {
     /* TODO: ignore space at the end */
+    char buff[3];
     int len = strlen(s);
     if (len > 1)
     {
@@ -47,19 +48,35 @@ ADR_METHOD find_addressing_method(char *s)/* to do: add lineNum*/
         }
         if(is_register(s))/*if the string is something like 'r1' (because it stops collecting characters when it reaches ',')*/
             return D_REGISTER;
-        if (len > 5)
+        if (len == 6 && s[2] == '[' && s[5] == ']')/*if the string is something like 'r1[r2]' (it is considered 1 operand therefore it hasn't stop collecting at '[')*/
         {
-            if (s[0] == 'r' && s[2] == '[' && s[3] == 'r' && s[5] ==']' ) /*if the string is something like 'r1[r2]' (it is considered 1 operand therefore it hasn't stop collecting at '[')*/
-            {
-                if (c_atoi(s[1]) % 2 != 0) /*if the first register is an odd number */
-                {
-                    if (c_atoi(s[4]) % 2 == 0) /* and the second register is even */
-                        return INDEX;
-                }
+	    buff[0] = s[0];
+	    buff[1] = s[1];
+	    buff[2] = '\0';
+            if (!is_register(buff))
+	    {
+		printf("Illegal register name \'%s\'\n", buff);
+		return 0;
             }
+            buff[0] = s[3];
+	    buff[1] = s[4];
+	    buff[2] = '\0';
+            if (!is_register(buff))
+	    {
+		printf("Illegal register name \'%s\'\n", buff);
+		return 0;
+            }
+
+            if (c_atoi(s[1]) % 2 != 0) /*if the first register is an odd number */
+            {
+                if (c_atoi(s[4]) % 2 == 0) /* and the second register is even */
+                    return INDEX;
+            }
+	    printf("For index addressing method - left register must be odd and right register must be even\n"); 
+	    return ILLEGAL_OPERAND;
         }
     }
-    if (is_label(s, 0))
+    if (is_label(s, 0))/*the label can be also something like 'r8' - because it is not a register name, it can be a label name */
         return DIRECT;
     /*otherwise it is illegal*/
     return ILLEGAL_OPERAND;
@@ -95,42 +112,52 @@ int check_operands(opcode_item *opcode, char * linep, int lineNum)
     int position = 0;
     ADR_METHOD srcAdr, dstAdr;
     char nextWord[MAX_SYMBOL_SIZE+1];
-
-    while (*linep != '\n' && *linep != '\0')
+    
+    if (opcode->group != 0)
     {
-	linep = getNextToken(linep, nextWord);
-	if (position > 2)
+	while (*linep != '\n' && *linep != '\0')
 	{
-               printf("At line %d illegal number of operands", lineNum);
-               return 0; /*illegal number of operands*/
+		linep = getNextToken(linep, nextWord);
+		if (position > 2)
+		{
+		       printf("At line %d illegal number of operands\n", lineNum);
+		       return 0; /*illegal number of operands*/
+		}
+		if (!linep)
+		{
+			printf("Illegal operand at line %d\n", lineNum);
+			return 0;
+		}
+		if (strlen(nextWord) > 0)
+		{ 
+			strcpy(operands[position], nextWord);
+			position++;
+		}
+		while (is_whitespace(*linep))
+		{
+			linep++; /*skip blank lines and stuff*/
+		}
+		if (*linep == '\n')
+		{
+			/* we successfully finished scanning the operands */
+			break;
+		}
+		if (*linep != ',')
+		{
+			printf("Illegal operand at line %d \n", lineNum);
+			return 0;   
+		}
+		else
+		{
+			linep++;
+		}
 	}
-	if (!linep)
-	{
-		break;
-	}
-	if (strlen(nextWord) > 0)
-	{
-		strcpy(operands[position], nextWord);
-		position++;
-	}
-	while (is_whitespace(*linep))
-	{
-		linep++; /*skip blank lines and stuff*/
-	}
-	if (*linep == '\n')
-	{
-		/* we successfully finished scanning the operands */
-		break;
-	}
-	if (*linep != ',')
-	{
-		/* printf error missing comma */
-		return 0;   
-	}
-	else
-	{
-		linep++;
-	}
+    }
+
+    if (!verifyEndOfLine(linep))
+    {
+	printf("Illegal operand at line %d\n", lineNum);
+	return 0;
     }
 
     if (position == opcode->group)
@@ -147,7 +174,7 @@ int check_operands(opcode_item *opcode, char * linep, int lineNum)
                 }
                 else
                 {
-                    printf("Incompatible addressing method for operand at line %d", lineNum);
+                    printf("Incompatible addressing method for operand at line %d\n", lineNum);
                     return 0;
                 }
             }
@@ -168,7 +195,7 @@ int check_operands(opcode_item *opcode, char * linep, int lineNum)
                 }
                 else
                 {
-                    printf("Incompatible addressing method for operand at line %d", lineNum);
+                    printf("Incompatible addressing method for operand at line %d\n", lineNum);
                     return 0;
                 }
             }
@@ -190,7 +217,7 @@ int check_operation(char *opcode_word, char* rest_of_line, int line_num)
     opcode_item* opcode_data;
     if ((opcode_data = opcode_lookup(opcode_word)) != NULL)
     {
-        int operands = check_operands(opcode_data, rest_of_line, line_num);
+        int operands = check_operands(opcode_data, rest_of_line, line_num);/* to do: move outside this function */
         if (operands == 0)
             return 0;
         else
