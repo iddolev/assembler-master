@@ -125,13 +125,14 @@ int file_pass(FILE *file, int pass_number)
 				symbol_table_add(label, MAIN_DATA.IC, 1, 0);
 		}
 
-		if (check_operation(next_word, linep, line_num))
+		if (pass_number == 1)
 		{
-			/* do lines 13-14 at pg.28*/
+			if (!first_pass_check_operands(next_word, linep, line_num))
+				error_count++;
 		}
-		else
+		else  /* second pass */
 		{
-			error_count++;
+			second_pass_process_operands(next_word, linep);
 		}
 
 		/* check if there isn't anything more in the line */

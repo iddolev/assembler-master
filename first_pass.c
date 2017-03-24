@@ -6,6 +6,8 @@
 #include "externs.h"
 #include "file_pass.h"
 #include "instructions.h"
+#include "opcodes.h"
+#include "operands.h"
 
 
 int first_pass(FILE *f)
@@ -173,4 +175,73 @@ int first_pass_ee_command(INSTRUCTION_TYPE type, char *linep, int line_num)
 
 	return 1; 
 }
+
+int first_pass_check_operands(char * opcode_word, char * linep, int line_num)
+{
+	parsed_operand operands[2];
+	ADR_METHOD srcAdr, dstAdr;
+	int num_op;
+
+	opcode_item* opcode_data = opcode_lookup(opcode_word);
+	if (!opcode_data)
+	{
+		printf("Line %d: invalid opcode '%s'\n", line_num, opcode_word);
+		return 0;
+	}
+	if (opcode_data->group == 0)
+	{
+		if (!verifyEndOfLine(linep))
+		{
+			printf("Line %d: No operands should appear after opcode '%s'\n", line_num, opcode_word);
+			return 0;
+		}
+		MAIN_DATA.IC += 1;
+		return 1;
+	}
+	num_op = collect_operands(operands, linep, line_num);
+	if (num_op == 0)
+	{
+		return 0;
+	}
+	if (num_op != opcode_data->group)
+	{
+	        printf("Unsuitable number of operands at line %d \n", line_num);
+		return 0;
+	}
+	if (num_op == 1)
+	{
+                dstAdr = operands[0].addressing_method;
+                if (valid_method_for_operand(opcode_data->addressing_mode.dst, dstAdr))
+                {
+			MAIN_DATA.IC += 2;
+			return 1;
+                }
+		printf("Incompatible addressing method for operand at line %d\n", line_num);
+		return 0;
+	}
+	if (num_op == 2)
+	{
+                srcAdr = operands[0].addressing_method;
+                dstAdr = operands[1].addressing_method;
+                if (valid_method_for_operand(opcode_data->addressing_mode.src, srcAdr) 
+			&& valid_method_for_operand(opcode_data->addressing_mode.dst, dstAdr))
+                {
+			if (srcAdr == REGISTER)
+			{
+				if (dstAdr == REGISTER)
+				{
+					MAIN_DATA.IC += 2;
+					return 1;
+				}
+			}
+			MAIN_DATA.IC += 3;
+			return 1;
+                }
+		printf("Incompatible addressing method for operand at line %d\n", line_num);
+		return 0;
+	}
+
+	return 0;   /* should not be reached */
+}
+
 

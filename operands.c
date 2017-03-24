@@ -186,20 +186,28 @@ char * adr_method_to_string(ADR_METHOD adr_method)
 ADR_METHOD check_immediate(char * s, int line_num)
 {
 	int i = 0;
+	int num_digits = 0;
+
 	if (s[i] == '#') 
 	{
 		i++;
-		if (s[i] == '+' || s[i] == '-' || isdigit(s[i]))  
+		if (s[i] == '+' || s[i] == '-')  
 		{
 			i++;
-			while (isdigit(s[i]))  
-			{
-				i++;
-			}
-			if (s[i] == '\0')
-			{
-				return IMMEDIATE;
-			}
+		}
+		while (isdigit(s[i]))  
+		{
+			num_digits++;
+			i++;
+		}
+		if (num_digits == 0)
+		{
+			printf("Missing digits after '#' at line %d\n", line_num);
+			return ILLEGAL_OPERAND;
+		}
+		if (s[i] == '\0')
+		{
+			return IMMEDIATE;
 		}
 		printf("Illegal operand after '#' at line %d\n", line_num);
 		return ILLEGAL_OPERAND;
@@ -292,6 +300,7 @@ ADR_METHOD get_addressing_method(char *s, int line_num)
 int collect_operands(parsed_operand operands[], char *linep, int line_num)
 {
 	int position = 0;
+	ADR_METHOD addressing_method;
 	char nextWord[MAX_SYMBOL_SIZE+1];
     
 	while (!is_end_char(*linep))
@@ -308,6 +317,12 @@ int collect_operands(parsed_operand operands[], char *linep, int line_num)
 			return 0;
 		}
 		strcpy(operands[position].text_value, nextWord);
+		addressing_method = get_addressing_method(nextWord, line_num);
+		if (addressing_method == ILLEGAL_OPERAND)
+		{
+			return 0;
+		}
+		operands[position].addressing_method = addressing_method;
 		position++;
 		while (is_whitespace(*linep))
 		{

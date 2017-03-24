@@ -44,3 +44,7 @@ int second_pass_ee_command(INSTRUCTION_TYPE type, char *line)
 	return 1;
 }
 
+int second_pass_process_operands(char *next_word, char *linep)
+{
+	return 0;
+}

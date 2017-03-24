@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "opcodes.h"
-#include "main_data.h"
 #include "first_pass.h"
 #include "symbol_table.h"
 #include "instructions.h"
 #include "operands.h"
+#include "externs.h"
 
 
 void test_getNextToken()
@@ -57,6 +57,12 @@ void test_get_addressing_method_str(char *s)
 void test_get_addressing_method()
 {
 	test_get_addressing_method_str("#1");
+	test_get_addressing_method_str("#354");
+	test_get_addressing_method_str("#-65");
+	test_get_addressing_method_str("#5a");
+	test_get_addressing_method_str("#a");
+	test_get_addressing_method_str("#");
+	test_get_addressing_method_str("#-");
 	test_get_addressing_method_str("r1");
 	test_get_addressing_method_str("r9");
 	test_get_addressing_method_str("r110");
@@ -64,6 +70,8 @@ void test_get_addressing_method()
 	test_get_addressing_method_str("r1[r3]");
 	test_get_addressing_method_str("r2[r3]");
 	test_get_addressing_method_str("loop");
+	test_get_addressing_method_str("lo-op");
+	test_get_addressing_method_str("loop-");
 }
 
 void test_getOp_str(char *s, int code)
@@ -142,6 +150,39 @@ void test_first_pass_ee_command()
 	reset_main_data();
 }
 
+void test_first_pass_check_operands1(char *opcode, char *linep)
+{
+	int ret;
+
+	printf("Testing first_pass_check_operands(\"%s\", \"%s\", 10)\n", opcode, linep);
+	ret = first_pass_check_operands(opcode, linep, 10);
+	printf("ret = %d\n", ret);
+	printf("IC = %d\n", MAIN_DATA.IC);
+}
+
+void test_first_pass_check_operands()
+{
+	test_first_pass_check_operands1("stop", "");
+	test_first_pass_check_operands1("stop", " loop");
+	test_first_pass_check_operands1("prn", " #1");
+	test_first_pass_check_operands1("prn", " xxx");
+	test_first_pass_check_operands1("prn", " r1");
+	test_first_pass_check_operands1("prn", " r1[r2]");
+	test_first_pass_check_operands1("prn", " r1 r2");
+	test_first_pass_check_operands1("prn", " r1, r2");
+	test_first_pass_check_operands1("clr", " #1");
+	test_first_pass_check_operands1("clr", " xxx");
+	test_first_pass_check_operands1("clr", " r1");
+	test_first_pass_check_operands1("clr", " r1[r2]");
+	test_first_pass_check_operands1("clr", "");
+	test_first_pass_check_operands1("mov", " x, y");
+	test_first_pass_check_operands1("mov", " #1, #2");
+	test_first_pass_check_operands1("mov", " r1, r2");
+	test_first_pass_check_operands1("mov", " r1[r2], r3[r4]");
+	test_first_pass_check_operands1("mov", " r1");
+	test_first_pass_check_operands1("mov", " ");
+}
+
 void nl()
 {
 	printf("\n");
@@ -156,6 +197,7 @@ void print_menu(char *program)
 	printf("4: test getDataOp\n");
 	printf("5: test getStringOp\n");
 	printf("6: test first_pass_ee_command\n");
+	printf("7: test first_pass_check_operands\n");
 }
 
 int main(int argc, char* argv[])
@@ -191,6 +233,9 @@ int main(int argc, char* argv[])
 			break;
 		case 6:
 			test_first_pass_ee_command();
+			break;
+		case 7:
+			test_first_pass_check_operands();
 			break;
 		default:
 			print_menu(argv[0]);
