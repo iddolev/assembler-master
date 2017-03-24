@@ -90,7 +90,7 @@ int is_separator(char c) {
 char * getNextToken(char * linep, char * buffer)
 {
 	int j = 0;
-	
+
 	if(linep == NULL || *linep == '\0' || *linep == '\n')
 		return NULL;
 
