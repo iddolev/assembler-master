@@ -110,6 +110,11 @@ char * getNextToken(char * linep, char * buffer)
 	return linep; /* return the position that we reached (and did not use yet) */
 }
 
+int is_end_char(char c)
+{
+	return c == '\0' || c == '\n';
+}
+
 int verifyEndOfLine(char * linep)
 {
 	while (*linep != '\n' && *linep != '\0')

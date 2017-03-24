@@ -1,5 +1,5 @@
 /* functions for parsing and validating lables and instructions.
- * Labels and instructions are clumped together because in assembly languages
+ * Labels and instructions are here together because in assembly languages
  * a label is also a type of assembler instruction, and does not
  * appear in the compiled code */
 
@@ -13,18 +13,6 @@
 #include "externs.h"
 #include "instructions.h"
 
-
-/*checks if line starts with a valid label*/
-/*TODO FIXME:
- * is_label doesn't actually work. A label is any alphanumeric string that starts with a letter and is shorter than 30 characters, and ends with ":".
- * So to properly check that you need to iterate over characters to build a buffer, and stop when you get to 30 chars, ":", or a non-alphanumeric (eg. whitespace) character.
- * Then you need to check if it ends with ":".
- *
- * This shouldn't return an error *unless* it ends with ":", so it makes more sense to turn it to a function that returns a string with the name of the label,
- * and it can be empty if there's an error or NULL if there's no error and no label. We'd need the label name later in first_pass to put in the symbol table.
- *
- * - Elad
- * */
 
 OP_TYPE is_label(char *s, int lineNum)
 {
@@ -66,8 +54,7 @@ OP_TYPE is_label(char *s, int lineNum)
 	return ERROR;
 }
 
-/* TODO: this shouldn't use "checkop" (renamed: check_operands), but rather different functions that will check for valid strings / arrays / whatever */
-ADR_TYPE is_instruction(char * word)
+INSTRUCTION_TYPE is_instruction(char * word)
 {
 	if (strcmp(word, ".data") == 0)
 	{
@@ -86,5 +73,6 @@ ADR_TYPE is_instruction(char * word)
 		return EXTERN;
 	}
 
-	return NOT;
+	return NOT_INST;
 }
+

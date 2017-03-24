@@ -13,6 +13,10 @@ int is_whitespace(char c);
 /* A char version of atoi(), because atoi() is for strings. Return 0 when the char is not a legal digit */
 int c_atoi(char c);
 
+/* Returns 1 iff c is '\0' or '\n'
+   Useful for checking end of string in line and in tests */
+int is_end_char(char c);
+
 char * getNextToken(char * linep, char * buffer);
 int verifyEndOfLine(char * linep);
 

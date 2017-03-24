@@ -1,25 +1,18 @@
 #include <string.h>
 #include "defs.h"
 
-void op_type_to_string(OP_TYPE op_type, char buffer[])
+char * op_type_to_string(OP_TYPE op_type)
 {
-	char *s;
-
 	switch(op_type)
 	{
 		case NOT:
-			s = "NOT";
-			break;	
+			return "NOT";
 		case SYMBOL:
-			s = "SYMBOL";
-			break;	
+			return "SYMBOL";
 		case ERROR:
-			s = "ERROR";
-			break;	
-		default:
-			s = "ILLEGAL OP_TYPE!";
-			break;	
+			return "ERROR";
 
 	};
-	strcpy(buffer, s);
+	return "ILLEGAL OP_TYPE!";
 }
+

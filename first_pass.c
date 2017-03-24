@@ -120,7 +120,7 @@ int getStringOp(char * linep, int lineNum)
 	return 0;
 }
 
-int first_pass_data_command(ADR_TYPE type, char *linep, int line_num)
+int first_pass_data_command(INSTRUCTION_TYPE type, char *linep, int line_num)
 {
 	int result;
 	
@@ -130,7 +130,7 @@ int first_pass_data_command(ADR_TYPE type, char *linep, int line_num)
 		if (result == 0)
 			return 0;
 	}
-	else
+	else  /* type == STRING  */
 	{
 		result = getStringOp(linep, line_num); /*to do: should return a value for errorCoun*/
 		if (result == 0)
@@ -139,7 +139,7 @@ int first_pass_data_command(ADR_TYPE type, char *linep, int line_num)
 	return 1;
 }
 
-int first_pass_ee_command(ADR_TYPE type, char *linep, int line_num)
+int first_pass_ee_command(INSTRUCTION_TYPE type, char *linep, int line_num)
 {
 	int lab;
 	char next_word[MAX_LINE_LENGTH+2]; 

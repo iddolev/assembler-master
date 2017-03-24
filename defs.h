@@ -15,10 +15,10 @@
 
 typedef enum {NOT, SYMBOL, ERROR} OP_TYPE;
 
-typedef enum {DATA, STRING, EXTERN, ENTRY} ADR_TYPE;
+typedef enum {NOT_INST, DATA, STRING, EXTERN, ENTRY} INSTRUCTION_TYPE;
 
 /* for debugging */
-void op_type_to_string(OP_TYPE op_type, char buffer[]);
+char * op_type_to_string(OP_TYPE op_type);
 
 
 

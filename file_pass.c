@@ -23,7 +23,7 @@ int file_pass(FILE *file, int pass_number)
 	char label[MAX_SYMBOL_SIZE+1];
 	int error_count, len;
 	OP_TYPE op_type;
-	ADR_TYPE adr_type;
+	INSTRUCTION_TYPE instruction_type;
 	char line[MAX_LINE_LENGTH+2]; /*+2 for the '\n' and '\0' char*/
 
 	while ((linep = fgets(line, MAX_LINE_LENGTH+10, file)))
@@ -83,8 +83,8 @@ int file_pass(FILE *file, int pass_number)
 			continue;
 		}
 
-		adr_type = is_instruction(next_word);
-		if (adr_type == DATA || adr_type == STRING)
+		instruction_type = is_instruction(next_word);
+		if (instruction_type == DATA || instruction_type == STRING)
 		{
 			if (pass_number == 1)
 			{
@@ -92,12 +92,12 @@ int file_pass(FILE *file, int pass_number)
 				{
 					symbol_table_add(label, MAIN_DATA.DC, 0, 0);
 				}
-				if (!first_pass_data_command(adr_type, linep, line_num))
+				if (!first_pass_data_command(instruction_type, linep, line_num))
 					error_count++;
 			}
 			continue;
 		}
-		else if (adr_type == EXTERN || adr_type == ENTRY)
+		else if (instruction_type == EXTERN || instruction_type == ENTRY)
 		{
 			if (symbol_flag)
 			{
@@ -106,12 +106,12 @@ int file_pass(FILE *file, int pass_number)
 			}
 			if (pass_number == 1)
 			{
-				if (!first_pass_ee_command(adr_type, linep, line_num))
+				if (!first_pass_ee_command(instruction_type, linep, line_num))
 					error_count++;
 			}
 			else
 			{
-				if (!second_pass_ee_command(adr_type, linep))
+				if (!second_pass_ee_command(instruction_type, linep))
 				{
 					return 0;    /* FATAL MEMORY ALLOCATION ERROR */
 				}

@@ -12,7 +12,7 @@ int second_pass(FILE *f)
 	return file_pass(f, 2);
 }
 
-int second_pass_ee_command(ADR_TYPE type, char *line)
+int second_pass_ee_command(INSTRUCTION_TYPE type, char *line)
 {
 	char next_word[MAX_SYMBOL_SIZE];
 	symbol_table_data *s_data;
@@ -34,7 +34,7 @@ int second_pass_ee_command(ADR_TYPE type, char *line)
 		MAIN_DATA.ENTRY_SECTION[MAIN_DATA.YC] = line_struct;
 		MAIN_DATA.YC++;
 	}
-	else
+	else  /* type == EXTERN */
 	{
 		line_struct->address = MAIN_DATA.IC;
 		strcpy(line_struct->label, next_word);

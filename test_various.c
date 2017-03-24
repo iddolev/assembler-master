@@ -6,6 +6,7 @@
 #include "first_pass.h"
 #include "symbol_table.h"
 #include "instructions.h"
+#include "operands.h"
 
 
 void test_getNextToken()
@@ -36,15 +37,33 @@ void test_is_label()
 	int num_labels = 9;
 	int i;
 	OP_TYPE r;
-	char buffer[256];
 
 	for (i=0; i<num_labels; ++i)
 	{
 		printf("Calling is_label(\"%s\")\n", labels[i]);
 		r = is_label(labels[i], i);
-		op_type_to_string(r, buffer);
-		printf("Result: %s\n", buffer);
+		printf("Result: %s\n", op_type_to_string(r));
 	}
+}
+
+void test_get_addressing_method_str(char *s)
+{
+	ADR_METHOD ret;
+	printf("Testing get_addressing_method(\"%s\", 10)\n", s);
+	ret = get_addressing_method(s, 10);
+	printf("ret = %s\n", adr_method_to_string(ret));
+}
+
+void test_get_addressing_method()
+{
+	test_get_addressing_method_str("#1");
+	test_get_addressing_method_str("r1");
+	test_get_addressing_method_str("r9");
+	test_get_addressing_method_str("r110");
+	test_get_addressing_method_str("r1[r2]");
+	test_get_addressing_method_str("r1[r3]");
+	test_get_addressing_method_str("r2[r3]");
+	test_get_addressing_method_str("loop");
 }
 
 void test_getOp_str(char *s, int code)
@@ -123,10 +142,20 @@ void test_first_pass_ee_command()
 	reset_main_data();
 }
 
-
 void nl()
 {
 	printf("\n");
+}
+
+void print_menu(char *program)
+{
+	printf("Usage: %s <code>\n", program);
+	printf("1: test getNextToken\n");
+	printf("2: test is_label\n");
+	printf("3: test get_addressing_method\n");
+	printf("4: test getDataOp\n");
+	printf("5: test getStringOp\n");
+	printf("6: test first_pass_ee_command\n");
 }
 
 int main(int argc, char* argv[])
@@ -135,12 +164,7 @@ int main(int argc, char* argv[])
 
 	if (argc == 1)
 	{
-		printf("Usage: %s <code>\n", argv[0]);
-		printf("1: test getNextToken\n");
-		printf("2: test is_label\n");
-		printf("3: test getDataOp\n");
-		printf("4: test getStringOp\n");
-		printf("5: test first_pass_ee_command\n");
+		print_menu(argv[0]);
 		return 0;
 	}
 
@@ -157,16 +181,19 @@ int main(int argc, char* argv[])
 			test_is_label();
 			break;
 		case 3:
-			test_getDataOp();
+			test_get_addressing_method();
 			break;
 		case 4:
-			test_getStringOp();
+			test_getDataOp();
 			break;
 		case 5:
+			test_getStringOp();
+			break;
+		case 6:
 			test_first_pass_ee_command();
 			break;
 		default:
-			printf("Illegal code\n");
+			print_menu(argv[0]);
 	}
 	return 0;
 }
