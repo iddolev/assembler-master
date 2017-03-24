@@ -95,14 +95,19 @@ int check_operands(opcode_item *opcode, char * linep, int lineNum)
     int position = 0;
     ADR_METHOD srcAdr, dstAdr;
     char nextWord[MAX_SYMBOL_SIZE+1];
-    
-    while (*linep != '\n')
+    printf("linep = \"%s\"\n", linep);
+    while (*linep != '\n' && *linep != '\0')
     {
+	printf("IN loop\n");
 	linep = getNextToken(linep, nextWord);
 	if (position > 2)
 	{
                printf("At line %d illegal number of operands", lineNum);
                return 0; /*illegal number of operands*/
+	}
+	if (!linep)
+	{
+		break;
 	}
 	if (strlen(nextWord) > 0)
 	{
@@ -128,7 +133,7 @@ int check_operands(opcode_item *opcode, char * linep, int lineNum)
 		linep++;
 	}
     }
-        
+	printf("position is : %d\n", position);
     if (position == opcode->group)
     {
         if (position > 0)
