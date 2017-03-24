@@ -46,7 +46,10 @@ void print_e_lines_array(char *name, e_file_line* array[], int size)
 {
 	int i;
 
-	printf("MAIN_DATA.%s (%d):\n", name, size);
+	printf("MAIN_DATA.%s (%d):", name, size);
+	if (size == 0)
+		printf(" EMPTY");
+	printf("\n");
 	for (i=0; i<size; ++i)
 	{
 		printf("%s[%d] = %s %d\n", name, i, array[i]->label, array[i]->address);

@@ -45,16 +45,31 @@ void test_is_label()
 	}
 }
 
-void test_getDataOp_str(char *s)
+void test_getOp_str(char *s, int code)
 {
 	int ret;
+	char *command = code == 1 ? "getDataOp" : "getStringOp";
+
 	init_main_data();
-	printf("Testing getDataOp(\"%s\")\n", s); 
-	ret = getDataOp(s, 1);
+	printf("Testing %s(\"%s\")\n", command, s); 
+	if (code == 1)
+		ret = getDataOp(s, 1);
+	else
+		ret = getStringOp(s, 1);
 	printf("ret = %d\n", ret);
 	if (ret)
 		print_main_data();
 	reset_main_data();
+}
+
+void test_getDataOp_str(char *s)
+{
+	test_getOp_str(s, 1);
+}
+
+void test_getStringOp_str(char *s)
+{
+	test_getOp_str(s, 2);
 }
 
 void test_getDataOp()
@@ -66,6 +81,17 @@ void test_getDataOp()
 	test_getDataOp_str("5 , ");
 	test_getDataOp_str(" ");
 	test_getDataOp_str("");
+}
+
+void test_getStringOp()
+{
+	test_getStringOp_str("\"abc\"");
+	test_getStringOp_str("\"ab cd\"");
+	test_getStringOp_str("\"abc\" ");
+	test_getStringOp_str("\"abc");
+	test_getStringOp_str("\"abc\n");
+	test_getStringOp_str("x \"abc\"");
+	test_getStringOp_str("\"abc\" x");
 }
 
 void nl()
@@ -83,6 +109,7 @@ int main(int argc, char* argv[])
 		printf("1: test getNextToken\n");
 		printf("2: test is_label\n");
 		printf("3: test getDataOp\n");
+		printf("4: test getStringOp\n");
 		return 0;
 	}
 
@@ -100,6 +127,9 @@ int main(int argc, char* argv[])
 			break;
 		case 3:
 			test_getDataOp();
+			break;
+		case 4:
+			test_getStringOp();
 			break;
 		default:
 			printf("Illegal code\n");

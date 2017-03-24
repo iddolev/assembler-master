@@ -83,10 +83,12 @@ int getStringOp(char * linep, int lineNum)
 	{
 		linep++; /*skip blank lines and stuff*/
 	}
-	
-	if (*linep == '\"')
+
+	if (*linep == '"')
 	{
-		while(*linep != '\"') /* scan it without the " " characters */
+		linep++;    /* skip " character */
+
+		while(*linep != '\0' && *linep != '\n' && *linep != '"') /* scan it without the " " characters */
 		{
 			asciiChar = *linep;
 			MAIN_DATA.DATA_SECTION[MAIN_DATA.DC] = asciiChar;
@@ -96,11 +98,18 @@ int getStringOp(char * linep, int lineNum)
 				printf("At line %d exceeded maximal number of data elements \n", lineNum);
 				return 0;
 			}
+			linep++;
 		}
+		if (*linep != '"')
+		{
+			printf("Missing end quote character at .string line %d\n", lineNum);
+			return 0;
+		}
+		linep++;    /* skip " character */
 	}
 	else
 	{
-		printf("At line %d illegal operand for '.string' \n", lineNum);
+		printf("Missing begin quote character at .string line %d\n", lineNum);
 		return 0;
 	}
 	
@@ -109,16 +118,17 @@ int getStringOp(char * linep, int lineNum)
 		linep++; /*skip blank lines and stuff*/
 	}
 	
-	if (*linep == '\n')
+	if (*linep == '\n' || *linep == '\0')
 	{
 		/* we successfully finished scanning the data section so move to next line */
 		return 1; 
 	}
 	else
 	{
-		printf("At line %d illegal operand for '.string' \n", lineNum);
+		printf("Illegal characters after end quote at .string line %d\n", lineNum);
 		return 0;
-	}	
+	}
+	return 0;
 }
 
 OP_TYPE is_label(char *s, int lineNum)
