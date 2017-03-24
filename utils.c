@@ -113,9 +113,9 @@ char * getNextToken(char * linep, char * buffer)
 	return linep; /* return the position that we reached (and did not use yet) */
 }
 
-int verifyEndOfLine(char * linep, int lineNum)
+int verifyEndOfLine(char * linep)
 {
-	while ((*linep) != '\n')
+	while (*linep != '\n' && *linep != '\0')
 	{
 		if (!is_whitespace(*linep))
 		{

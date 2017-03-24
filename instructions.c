@@ -25,111 +25,6 @@
  *
  * - Elad
  * */
-int getDataOp(char * linep, int lineNum)
-{
-	char nextWord[MAX_SYMBOL_SIZE];
-	
-	while (*linep != '\n')
-		{
-			linep = getNextToken(linep, nextWord);
-			if (!linep)
-			{
-				printf("Missing oprands for '.data' at line %d \n", lineNum);
-				return 0;
-			}
-			if (is_number(nextWord))
-			{
-				MAIN_DATA.DATA_SECTION[MAIN_DATA.DC] = atoi(nextWord);
-				MAIN_DATA.DC++;
-				if (MAIN_DATA.DC >= DATA_SECTION_SIZE)
-				{
-					printf("At line %d exceeded maximal number of data elements \n", lineNum);
-					return 0;
-				}
-			}
-			else
-			{
-				printf("At line %d illegal operand \"%s\" for '.data' \n", lineNum, nextWord);
-				return 0;
-			}
-			/* now check legal nextWord, and update MAIN_DATA.DC */
-			while (is_whitespace(*linep))
-			{
-				linep++; /*skip blank lines and stuff*/
-			}
-			if (*linep == '\n' || *linep == '\0')
-			{
-				/* we successfully finished scanning the data section so move to next line */
-				return 1; 
-			}
-			if (*linep != ',')
-			{
-				printf("Missing comma at line %d \n", lineNum);
-				return 0;   /* continue to next line: no point in continuing to make sense of the corrupt data section*/
-			}
-			else
-			{
-				linep++;
-			}
-		}
-	return 0;	
-}
-
-int getStringOp(char * linep, int lineNum)
-{
-	int asciiChar;
-	
-	while (is_whitespace(*linep))
-	{
-		linep++; /*skip blank lines and stuff*/
-	}
-
-	if (*linep == '"')
-	{
-		linep++;    /* skip " character */
-
-		while(*linep != '\0' && *linep != '\n' && *linep != '"') /* scan it without the " " characters */
-		{
-			asciiChar = *linep;
-			MAIN_DATA.DATA_SECTION[MAIN_DATA.DC] = asciiChar;
-			MAIN_DATA.DC++;
-			if (MAIN_DATA.DC >= DATA_SECTION_SIZE)
-			{
-				printf("At line %d exceeded maximal number of data elements \n", lineNum);
-				return 0;
-			}
-			linep++;
-		}
-		if (*linep != '"')
-		{
-			printf("Missing end quote character at .string line %d\n", lineNum);
-			return 0;
-		}
-		linep++;    /* skip " character */
-	}
-	else
-	{
-		printf("Missing begin quote character at .string line %d\n", lineNum);
-		return 0;
-	}
-	
-	while (is_whitespace(*linep))
-	{
-		linep++; /*skip blank lines and stuff*/
-	}
-	
-	if (*linep == '\n' || *linep == '\0')
-	{
-		/* we successfully finished scanning the data section so move to next line */
-		return 1; 
-	}
-	else
-	{
-		printf("Illegal characters after end quote at .string line %d\n", lineNum);
-		return 0;
-	}
-	return 0;
-}
 
 OP_TYPE is_label(char *s, int lineNum)
 {
@@ -172,7 +67,7 @@ OP_TYPE is_label(char *s, int lineNum)
 }
 
 /* TODO: this shouldn't use "checkop" (renamed: check_operands), but rather different functions that will check for valid strings / arrays / whatever */
-ADR_TYPE is_instruction(char * word, char * linep, int lineNum)
+ADR_TYPE is_instruction(char * word)
 {
 	if (strcmp(word, ".data") == 0)
 	{
@@ -184,33 +79,11 @@ ADR_TYPE is_instruction(char * word, char * linep, int lineNum)
 	}
 	if (strcmp(word, ".entry") == 0)
 	{
-		linep = getNextToken(linep, word);
-		if (is_label(word, lineNum))
-		{
-			linep = getNextToken(linep, word);
-			if (linep != NULL)
-				printf("Illegal operand for '.entry' at line number %d \n", lineNum); /* to do - verifyEndOfLine */
-			else
-				return ENTRY;
-		}
-		else
-			printf("Illegal operand for '.entry' at line number %d \n", lineNum);
-		return ERROR;
+		return ENTRY;
 	}
 	if (strcmp(word, ".extern") == 0)
 	{
-		linep = getNextToken(linep, word);
-		if (is_label(word, lineNum))
-		{
-			linep = getNextToken(linep, word);
-			if (linep != NULL)
-				printf("Illegal operand for '.exten' at line number %d \n", lineNum);
-			else
-				return ENTRY;
-		}
-		else
-			printf("Illegal operand for '.extern' at line number %d \n", lineNum);
-		return ERROR;
+		return EXTERN;
 	}
 
 	return NOT;

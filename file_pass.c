@@ -7,58 +7,8 @@
 #include "instructions.h"
 #include "header.h"
 #include "externs.h"
+#include "first_pass.h"
 
-
-void first_pass_data_command(OP_TYPE type, char *linep, int line_num, int symbol_flag, char *label)
-{
-	int result;
-	
-	if (symbol_flag == 1)
-	{
-		symbol_table_add(label, DC, 0, 0);
-	}
-	if (type == DATA)
-	{
-		result = getDataOp(linep, line_num); /*to do: should return a value for error_count*/
-		if (result == 0)
-			return 0;
-	}
-	else
-	{
-		result = getStringOp(linep, line_num); /*to do: should return a value for errorCoun*/
-		if (result == 0)
-			return 0;
-	}
-	return 1;
-}
-
-void first_pass_ee_command(OP_TYPE type, char *linep, int line_num)
-{
-	OP_TYPE type;
-	int lab;
-	char next_word[MAX_LINE+2]; 
-	
-	linep = getNextToken(linep, next_word);
-	lab = is_label(next_word, line_num);
-	if (lab == SYMBOL)
-	{
-		if (type == EXTERN)
-		{
-			symbol_table_add(next_word, 0, 0, 1);
-		}
-	}
-	else
-	{
-		return 0;
-	}
-	/* now need to check if there isn't anything in the line afterward i.e '.extern LOOP asdfthgj' - it's not legal*/
-	if (!verifyEndOfLine(linep, line_num))
-	{
-		printf("Illegal extra at line %d: %s \n", line_num, linep);
-		return 0;
-	}
-	return 1; 
-}
 
 int second_pass_ee_command(OP_TYPE type, char *line)
 {
@@ -100,7 +50,8 @@ int file_pass(FILE *file, int pass_number)
 	char next_word[MAX_LINE+2]; /*+2 for the '\n' and '\0' char*/
 	char label[MAX_LABEL_SIZE+1];
 	int error_count, len, result;
-	OP_TYPE type;
+	OP_TYPE op_type;
+	ADR_TYPE adr_type;
 	char line[MAX_LINE+2]; /*+2 for the '\n' and '\0' char*/
 
 	while (linep = fgets(line, MAX_LINE+10, file))
@@ -128,8 +79,8 @@ int file_pass(FILE *file, int pass_number)
 		if (!linep)
 			continue;
 		
-		type = is_label(next_word, line_num);
-		if(type == SYMBOL && *linep == ':') /*maybe need to check if isSymbol == error*/
+		op_type = is_label(next_word, line_num);
+		if(op_type == SYMBOL && *linep == ':') /*maybe need to check if isSymbol == error*/
 		{
 			/* to do: maybe allow whitespace between next_word and ':' */
 			strcpy(label, next_word); /* we save the symbol name for further use */
@@ -138,7 +89,7 @@ int file_pass(FILE *file, int pass_number)
 			linep++;
 			linep = getNextToken(linep, next_word);
 		}
-		else if (type == ERROR || (type == SYMBOL && linep != ':'))
+		else if (op_type == ERROR || (op_type == SYMBOL && linep != ':'))
 		{
 			error_count++;
 			/*collect next operator*/
@@ -147,12 +98,12 @@ int file_pass(FILE *file, int pass_number)
 
 		if (!linep)
 		{
-			/* to do - print error? */
+			printf("No content after label in line %d\n", line_num);
 			continue;
 		}
 		
-		type = is_instruction(linep, next_word, line_num);
-		if (type == DATA || type == STRING)
+		adr_type = is_instruction(next_word);
+		if (adr_type == DATA || adr_type == STRING)
 		{
 			if (pass_number == 1)
 				if (!first_pass_data_command(linep, line_num, symbol_flag, label))
@@ -160,14 +111,14 @@ int file_pass(FILE *file, int pass_number)
 			continue;
 		}
 
-		if (type == EXTERN || type == ENTRY)
+		if (adr_type == EXTERN || adr_type == ENTRY)
 		{
 			if (pass_numer == 1)
-				if (!first_pass_ee_command(type, linep, line_num))
+				if (!first_pass_ee_command(adr_type, linep, line_num))
 					error_count++;
 			else
 			{
-				if (!second_pass_ee_command(type, linep))
+				if (!second_pass_ee_command(adr_type, linep))
 				{
 					return 0;    /* FATAL ERROR */
 				}

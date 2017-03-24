@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "utils.h"
-#include "instructions.h"
 #include "opcodes.h"
 #include "main_data.h"
+#include "first_pass.h"
+#include "symbol_table.h"
 
 
 void test_getNextToken()
@@ -94,6 +95,34 @@ void test_getStringOp()
 	test_getStringOp_str("\"abc\" x");
 }
 
+void test_first_pass_ee_command()
+{
+	int ret;
+
+	init_main_data();
+	printf("Testing test_first_pass_ee_command(EXTERN, \"LOOP\", 5)\n"); 
+	ret = first_pass_ee_command(EXTERN, "LOOP", 5);	
+	printf("ret = %d\n", ret);
+	printf("Testing test_first_pass_ee_command(EXTERN, \"BOBO \", 6)\n"); 
+	ret = first_pass_ee_command(EXTERN, "BOBO  ", 6);	
+	printf("ret = %d\n", ret);
+	printf("Testing test_first_pass_ee_command(EXTERN, \" KKK\", 7)\n"); 
+	ret = first_pass_ee_command(EXTERN, " KKK", 7);	
+	printf("ret = %d\n", ret);
+	printf("Testing test_first_pass_ee_command(EXTERN, \"  \", 8)\n"); 
+	ret = first_pass_ee_command(EXTERN, "  ", 8);	
+	printf("Testing test_first_pass_ee_command(EXTERN, \"\", 9)\n"); 
+	ret = first_pass_ee_command(EXTERN, "", 9);	
+	printf("ret = %d\n", ret);
+	printf("Testing test_first_pass_ee_command(EXTERN, \"ABC DEF\", 10)\n"); 
+	ret = first_pass_ee_command(EXTERN, "ABC DEF", 10);	
+	printf("ret = %d\n", ret);
+
+	print_symbol_table();
+	reset_main_data();
+}
+
+
 void nl()
 {
 	printf("\n");
@@ -110,6 +139,7 @@ int main(int argc, char* argv[])
 		printf("2: test is_label\n");
 		printf("3: test getDataOp\n");
 		printf("4: test getStringOp\n");
+		printf("5: test first_pass_ee_command\n");
 		return 0;
 	}
 
@@ -130,6 +160,9 @@ int main(int argc, char* argv[])
 			break;
 		case 4:
 			test_getStringOp();
+			break;
+		case 5:
+			test_first_pass_ee_command();
 			break;
 		default:
 			printf("Illegal code\n");

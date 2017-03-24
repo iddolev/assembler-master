@@ -14,7 +14,7 @@ int is_whitespace(char c);
 int c_atoi(char c);
 
 char * getNextToken(char * linep, char * buffer);
-int verifyEndOfLine(char * linep, int lineNum);
+int verifyEndOfLine(char * linep);
 
 /* Example: 
    current = 00000011
