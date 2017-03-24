@@ -15,6 +15,8 @@
 
 typedef enum {NOT, NEW_LINE, SYMBOL, METHOD, OPERANT, REGISTER, ERROR, COMMENT} OP_TYPE;
 
+typedef enum {DATA, STRING, EXTERN, ENTRY} ADR_TYPE;
+
 void op_type_to_string(OP_TYPE op_type, char buffer[]);
 
 

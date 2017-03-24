@@ -2,44 +2,14 @@
    Don't use this file yet. */
    
 #include <stdio.h>
-#include "stack.h"
+#include <string.h>
 #include "utils.h"
-#include "instructions.h"
-#include "header.h"
 #include "externs.h"
 #include "first_pass.h"
-
-
-int second_pass_ee_command(OP_TYPE type, char *line)
-{
-	symbol_table_data s_data;
-	e_file_line *line_struct;
-	
-	line_struct = (line_struct*) malloc(sizeof(line_struct));
-	if (!line_struct)
-	{
-		printf("Memory allocation problem\n");
-		return 0;
-	}
-	
-	linep = getNextToken(linep, next_word);
-	if (type == ENTRY)
-	{
-		symbol_table_data s_data = symbol_table_lookup(next_word);
-		line_struct->address = s_data->address;
-		strcpy(line_struct->label, next_word);
-		MAIN_DATA.ENTRY_SECTION[MAIN_DATA.YC] = line_struct;
-		MAIN_DATA.YC++;
-	}
-	else
-	{
-		line_struct->address = MAIN_DATA.IC;
-		strcpy(line_struct->label, next_word);
-		MAIN_DATA.EXTERN_SECTION[MAIN_DATA.XC] = line_struct;
-		MAIN_DATA.XC++;
-	}
-	return 1;
-}
+#include "second_pass.h"
+#include "utils.h"
+#include "operands.h"
+#include "symbol_table.h"
 
 
 /* pass_number should be 1 or 2 */
@@ -47,18 +17,18 @@ int file_pass(FILE *file, int pass_number)
 {
 	int i = 0, line_num = -1, symbol_flag = 0;
 	char * linep, op;
-	char next_word[MAX_LINE+2]; /*+2 for the '\n' and '\0' char*/
-	char label[MAX_LABEL_SIZE+1];
+	char next_word[MAX_LINE_LENGTH+2]; /*+2 for the '\n' and '\0' char*/
+	char label[MAX_SYMBOL_SIZE+1];
 	int error_count, len, result;
 	OP_TYPE op_type;
 	ADR_TYPE adr_type;
-	char line[MAX_LINE+2]; /*+2 for the '\n' and '\0' char*/
+	char line[MAX_LINE_LENGTH+2]; /*+2 for the '\n' and '\0' char*/
 
-	while (linep = fgets(line, MAX_LINE+10, file))
+	while (linep = fgets(line, MAX_LINE_LENGTH+10, file))
 	{
 		line_num++;     /* we started with line_num == -1 */
 		len = strlen(line);
-		if (len > MAX_LINE)
+		if (len > MAX_LINE_LENGTH)
 		{
 			printf("Line number %d is too long \n", line_num);
 			error_count++;
@@ -89,7 +59,7 @@ int file_pass(FILE *file, int pass_number)
 			linep++;
 			linep = getNextToken(linep, next_word);
 		}
-		else if (op_type == ERROR || (op_type == SYMBOL && linep != ':'))
+		else if (op_type == ERROR || (op_type == SYMBOL && *linep != ':'))
 		{
 			error_count++;
 			/*collect next operator*/
@@ -106,14 +76,14 @@ int file_pass(FILE *file, int pass_number)
 		if (adr_type == DATA || adr_type == STRING)
 		{
 			if (pass_number == 1)
-				if (!first_pass_data_command(linep, line_num, symbol_flag, label))
+				if (!first_pass_data_command(adr_type, linep, line_num, symbol_flag, label))
 					error_count++;
 			continue;
 		}
 
 		if (adr_type == EXTERN || adr_type == ENTRY)
 		{
-			if (pass_numer == 1)
+			if (pass_number == 1)
 				if (!first_pass_ee_command(adr_type, linep, line_num))
 					error_count++;
 			else
@@ -128,17 +98,21 @@ int file_pass(FILE *file, int pass_number)
 
 		if (symbol_flag == 1)
 		{
-			if (pass_numer == 1)
-				symbol_table_add(label, IC, 1, 0);
+			if (pass_number == 1)
+				symbol_table_add(label, MAIN_DATA.IC, 1, 0);
 		}
 
 		if (check_operation(next_word, linep, line_num) == 1)
+		{
 			/* do lines 13-14 at pg.28*/
-		else if (type == ERROR)
+		}
+		else
+		{
 			error_count++;
+		}
 
 		/*check if there isn't anything more in the line*/
-		if (verifyEndOfLine(linep, line_num) == 0)
+		if (verifyEndOfLine(linep) == 0)
 		{
 			error_count++;
 			printf("Illegal command at line %d \n", line_num);
@@ -146,3 +120,4 @@ int file_pass(FILE *file, int pass_number)
 	}
 	return error_count;
 }
+
