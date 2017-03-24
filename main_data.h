@@ -26,6 +26,9 @@ void reset_main_data();
 /* for debug */
 void print_main_data();
 
-void add_to_code_section(int value);
+int add_to_data_section(int value);
+int add_to_code_section(int value);
+int add_to_entry_section(int address, char *label);
+int add_to_extern_section(int address, char *label);
 
 

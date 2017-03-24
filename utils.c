@@ -79,7 +79,7 @@ int c_atoi(char c)
 /* Check if char c is a token separator */
 int is_separator(char c) 
 {
-	return c == '\n' || c == '\0' || c == ':'  || c == ',';
+	return is_end_char(c) || c == ':'  || c == ',';
 }
 
 /* Read next word from linep into buffer.
@@ -88,7 +88,7 @@ char * getNextToken(char * linep, char * buffer)
 {
 	int j = 0;
 
-	if(linep == NULL || *linep == '\0' || *linep == '\n')
+	if(linep == NULL || is_end_char(*linep))
 		return NULL;
 
 	while (is_whitespace(*linep))
@@ -117,7 +117,7 @@ int is_end_char(char c)
 
 int verifyEndOfLine(char * linep)
 {
-	while (*linep != '\n' && *linep != '\0')
+	while (!is_end_char(*linep))
 	{
 		if (!is_whitespace(*linep))
 		{
@@ -130,14 +130,24 @@ int verifyEndOfLine(char * linep)
 
 /* Example: 
    current = 00000011
-   to_add = 01
    num_bits = 2
+   to_add = 01
    result = 00001101
 */
-int push_to_encoding(int current, int to_add, int num_bits)
+int push_to_encoding(int current, int num_bits, int to_add)
 {
+	int max, mask;
 	int result = current;
 	result <<= num_bits;
+	max = 1 << num_bits;
+	if (to_add >= max)
+	{
+		printf("ERROR: push_to_encoding: Argument %d is to add is too large in %d bits\n", to_add, num_bits);
+		mask = max-1;
+		to_add = to_add & mask;    /* keep only the lower num_bits bits of to_add */ 
+	}
 	result += to_add;
 	return result;
 }
+
+

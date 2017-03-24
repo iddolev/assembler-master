@@ -41,7 +41,7 @@ int file_pass(FILE *file, int pass_number)
 			line[len-1] = '\n';
 		}
 
-		if (linep[0] == '\0' || linep[0] == '\n' || linep[0] ==';')
+		if (is_end_char(linep[0]) || linep[0] ==';')
 		{
 			continue; /*need to ignore blank lines and comment lines*/
 		}

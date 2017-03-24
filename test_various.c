@@ -77,50 +77,50 @@ void test_get_addressing_method()
 void test_getOp_str(char *s, int code)
 {
 	int ret;
-	char *command = code == 1 ? "getDataOp" : "getStringOp";
+	char *command = code == 1 ? "process_data_instruction" : "process_string_instruction";
 
 	init_main_data();
 	printf("Testing %s(\"%s\")\n", command, s); 
 	if (code == 1)
-		ret = getDataOp(s, 1);
+		ret = process_data_instruction(s, 1);
 	else
-		ret = getStringOp(s, 1);
+		ret = process_string_instruction(s, 1);
 	printf("ret = %d\n", ret);
 	if (ret)
 		print_main_data();
 	reset_main_data();
 }
 
-void test_getDataOp_str(char *s)
+void test_process_data_instruction_str(char *s)
 {
 	test_getOp_str(s, 1);
 }
 
-void test_getStringOp_str(char *s)
+void test_process_string_instruction_str(char *s)
 {
 	test_getOp_str(s, 2);
 }
 
-void test_getDataOp()
+void test_process_data_instruction()
 {
-	test_getDataOp_str("5 ");
-	test_getDataOp_str("  5, -3  ,7  ,   8,4  ,+6  ,  -88  ");
-	test_getDataOp_str("5 3");
-	test_getDataOp_str("5 , x");
-	test_getDataOp_str("5 , ");
-	test_getDataOp_str(" ");
-	test_getDataOp_str("");
+	test_process_data_instruction_str("5 ");
+	test_process_data_instruction_str("  5, -3  ,7  ,   8,4  ,+6  ,  -88  ");
+	test_process_data_instruction_str("5 3");
+	test_process_data_instruction_str("5 , x");
+	test_process_data_instruction_str("5 , ");
+	test_process_data_instruction_str(" ");
+	test_process_data_instruction_str("");
 }
 
-void test_getStringOp()
+void test_process_string_instruction()
 {
-	test_getStringOp_str("\"abc\"");
-	test_getStringOp_str("\"ab cd\"");
-	test_getStringOp_str("\"abc\" ");
-	test_getStringOp_str("\"abc");
-	test_getStringOp_str("\"abc\n");
-	test_getStringOp_str("x \"abc\"");
-	test_getStringOp_str("\"abc\" x");
+	test_process_string_instruction_str("\"abc\"");
+	test_process_string_instruction_str("\"ab cd\"");
+	test_process_string_instruction_str("\"abc\" ");
+	test_process_string_instruction_str("\"abc");
+	test_process_string_instruction_str("\"abc\n");
+	test_process_string_instruction_str("x \"abc\"");
+	test_process_string_instruction_str("\"abc\" x");
 }
 
 void test_first_pass_ee_command()
@@ -196,8 +196,8 @@ void print_menu(char *program)
 	printf("1: test getNextToken\n");
 	printf("2: test is_label\n");
 	printf("3: test get_addressing_method\n");
-	printf("4: test getDataOp\n");
-	printf("5: test getStringOp\n");
+	printf("4: test process_data_instruction\n");
+	printf("5: test process_string_instruction\n");
 	printf("6: test first_pass_ee_command\n");
 	printf("7: test first_pass_check_operands\n");
 }
@@ -228,10 +228,10 @@ int main(int argc, char* argv[])
 			test_get_addressing_method();
 			break;
 		case 4:
-			test_getDataOp();
+			test_process_data_instruction();
 			break;
 		case 5:
-			test_getStringOp();
+			test_process_string_instruction();
 			break;
 		case 6:
 			test_first_pass_ee_command();

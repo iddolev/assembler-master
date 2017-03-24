@@ -66,3 +66,8 @@ void print_symbol_table()
 	}
 }
 
+void symbol_table_clear()
+{
+	/* to do */
+}
+

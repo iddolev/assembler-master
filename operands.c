@@ -186,7 +186,7 @@ int collect_operands(parsed_operand operands[], char *linep, int line_num)
 			printf("Missing operand at line %d\n", line_num);
 			return 0;
 		}
-		strcpy(operands[position].text_value, nextWord);
+		strcpy(operands[position].text, nextWord);
 		addressing_method = get_addressing_method(nextWord, line_num);
 		if (addressing_method == ILLEGAL_OPERAND)
 		{
@@ -212,4 +212,35 @@ int collect_operands(parsed_operand operands[], char *linep, int line_num)
 	}
 	return position;
 }
+
+int encode_command(int group, int opcode, ADR_METHOD src, ADR_METHOD dst)
+{
+	int encoding = 0;
+	
+	encoding = push_to_encoding(encoding, 3, 7);         /* constant 111 in binary */
+	encoding = push_to_encoding(encoding, 2, group);
+	encoding = push_to_encoding(encoding, 4, opcode);
+	encoding = push_to_encoding(encoding, 2, src);
+	encoding = push_to_encoding(encoding, 2, dst);
+	encoding = push_to_encoding(encoding, 2, ABSOLUTE);         /* command has absolute coding type */
+	return encoding;
+}
+
+int encode_registers(int register1, int register2)
+{
+	int encoding = 0;
+	encoding = push_to_encoding(encoding, 6, register1);
+	encoding = push_to_encoding(encoding, 6, register2);
+	encoding = push_to_encoding(encoding, 2, ABSOLUTE);
+	return encoding;
+}
+
+int encode_argument(CODING_TYPE coding_type, int value)
+{
+	int encoding = 0;
+	encoding = push_to_encoding(encoding, 13, value);
+	encoding = push_to_encoding(encoding, 2, coding_type);
+	return encoding;
+}
+
 

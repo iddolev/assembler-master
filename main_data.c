@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "main_data.h"
 
 
@@ -28,14 +29,72 @@ void reset_main_data()
 	init_main_data();
 }
 
-void add_to_code_section(int value)
+int add_to_data_section(int value)
+{
+	if (MAIN_DATA.DC >= DATA_SECTION_SIZE)
+	{
+		printf("Error: Too many data items\n");
+		return 0;
+	}
+	MAIN_DATA.DATA_SECTION[MAIN_DATA.DC++] = value;
+	return 1;
+}
+
+int add_to_code_section(int value)
 {
 	if (MAIN_DATA.IC >= CODE_SECTION_SIZE)
 	{
 		printf("Error: Too many code lines\n");
-		exit(0);
+		return 0;
 	}
 	MAIN_DATA.CODE_SECTION[MAIN_DATA.IC++] = value;
+	return 1;
+}
+
+int add_to_entry_section(int address, char *label)
+{
+	e_file_line *line_struct;
+
+	if (MAIN_DATA.YC >= ENTRY_SECTION_SIZE)
+	{
+		printf("Error: Too many entry lines\n");
+		return 0;
+	}
+
+	line_struct = (e_file_line*) malloc(sizeof(line_struct));
+	if (!line_struct)
+	{
+		printf("Memory allocation problem\n");
+		return 0;
+	}
+	
+	line_struct->address = address;
+	strcpy(line_struct->label, label);
+	MAIN_DATA.ENTRY_SECTION[MAIN_DATA.YC++] = line_struct;
+	return 1;
+}
+
+int add_to_extern_section(int address, char *label)
+{
+	e_file_line *line_struct;
+
+	if (MAIN_DATA.XC >= EXTERN_SECTION_SIZE)
+	{
+		printf("Error: Too many extern lines\n");
+		return 0;
+	}
+
+	line_struct = (e_file_line*) malloc(sizeof(line_struct));
+	if (!line_struct)
+	{
+		printf("Memory allocation problem\n");
+		return 0;
+	}
+	
+	line_struct->address = address;
+	strcpy(line_struct->label, label);
+	MAIN_DATA.EXTERN_SECTION[MAIN_DATA.XC++] = line_struct;
+	return 1;
 }
 
 void print_int_array(char *name, int array[], int size)

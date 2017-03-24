@@ -18,7 +18,7 @@ OP_TYPE is_label(char *s, int lineNum)
 {
 	int i=0;
 
-	if (s[0] == '\n' || s[0] == '\0')
+	if (is_end_char(s[0]))
 	{
 		return NOT;
 	}

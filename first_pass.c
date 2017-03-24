@@ -16,7 +16,7 @@ int first_pass(FILE *f)
 }
 
 
-int getDataOp(char * linep, int lineNum)
+int process_data_instruction(char * linep, int lineNum)
 {
 	char nextWord[MAX_SYMBOL_SIZE];
 	
@@ -30,9 +30,7 @@ int getDataOp(char * linep, int lineNum)
 			}
 			if (is_number(nextWord))
 			{
-				MAIN_DATA.DATA_SECTION[MAIN_DATA.DC] = atoi(nextWord);
-				MAIN_DATA.DC++;
-				if (MAIN_DATA.DC >= DATA_SECTION_SIZE)
+				if (!add_to_data_section(atoi(nextWord)))
 				{
 					printf("At line %d exceeded maximal number of data elements \n", lineNum);
 					return 0;
@@ -48,7 +46,7 @@ int getDataOp(char * linep, int lineNum)
 			{
 				linep++; /*skip blank lines and stuff*/
 			}
-			if (*linep == '\n' || *linep == '\0')
+			if (is_end_char(*linep))
 			{
 				/* we successfully finished scanning the data section so move to next line */
 				return 1; 
@@ -66,7 +64,7 @@ int getDataOp(char * linep, int lineNum)
 	return 0;	
 }
 
-int getStringOp(char * linep, int lineNum)
+int process_string_instruction(char * linep, int lineNum)
 {
 	int asciiChar;
 	
@@ -79,12 +77,10 @@ int getStringOp(char * linep, int lineNum)
 	{
 		linep++;    /* skip " character */
 
-		while(*linep != '\0' && *linep != '\n' && *linep != '"') /* scan it without the " " characters */
+		while(!is_end_char(*linep) && *linep != '"') /* scan it without the " " characters */
 		{
 			asciiChar = *linep;
-			MAIN_DATA.DATA_SECTION[MAIN_DATA.DC] = asciiChar;
-			MAIN_DATA.DC++;
-			if (MAIN_DATA.DC >= DATA_SECTION_SIZE)
+			if (!add_to_data_section(asciiChar))
 			{
 				printf("At line %d exceeded maximal number of data elements \n", lineNum);
 				return 0;
@@ -128,13 +124,13 @@ int first_pass_data_command(INSTRUCTION_TYPE type, char *linep, int line_num)
 	
 	if (type == DATA)
 	{
-		result = getDataOp(linep, line_num); /*to do: should return a value for error_count*/
+		result = process_data_instruction(linep, line_num); /*to do: should return a value for error_count*/
 		if (result == 0)
 			return 0;
 	}
 	else  /* type == STRING  */
 	{
-		result = getStringOp(linep, line_num); /*to do: should return a value for errorCoun*/
+		result = process_string_instruction(linep, line_num); /*to do: should return a value for errorCoun*/
 		if (result == 0)
 			return 0;
 	}

@@ -6,6 +6,7 @@
 #include "symbol_table.h"
 #include "opcodes.h"
 #include "utils.h"
+#include "write_data.h"
 
 
 void run_on_file(char *file_name)
@@ -64,3 +65,4 @@ int main(int argc, char *argv[])
 	run_on_files(argv+1, argc-1);
 	return 0;
 }
+
