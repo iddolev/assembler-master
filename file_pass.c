@@ -17,16 +17,16 @@
 /* pass_number should be 1 or 2 */
 int file_pass(FILE *file, int pass_number)
 {
-	int i = 0, line_num = -1, symbol_flag = 0;
-	char * linep, op;
+	int line_num = -1, symbol_flag = 0;
+	char * linep;
 	char next_word[MAX_SYMBOL_SIZE+1]; /* +1 for terminating '\0' */
 	char label[MAX_SYMBOL_SIZE+1];
-	int error_count, len, result;
+	int error_count, len;
 	OP_TYPE op_type;
 	ADR_TYPE adr_type;
 	char line[MAX_LINE_LENGTH+2]; /*+2 for the '\n' and '\0' char*/
 
-	while (linep = fgets(line, MAX_LINE_LENGTH+10, file))
+	while ((linep = fgets(line, MAX_LINE_LENGTH+10, file)))
 	{
 		line_num++;     /* we started with line_num == -1 */
 		len = strlen(line);
@@ -105,8 +105,10 @@ int file_pass(FILE *file, int pass_number)
 				/* not counting as error */
 			}
 			if (pass_number == 1)
+			{
 				if (!first_pass_ee_command(adr_type, linep, line_num))
 					error_count++;
+			}
 			else
 			{
 				if (!second_pass_ee_command(adr_type, linep))

@@ -19,7 +19,7 @@ void run_on_file(char *file_name)
 	
 	sprintf(full_name, "%s.as", file_name);
 
-	if (f = open_file(full_name, "r"))
+	if ((f = open_file(full_name, "r")))
 	{
 		errors = first_pass(f);
 		fclose(f);
@@ -27,7 +27,7 @@ void run_on_file(char *file_name)
 		{
 			printf("Encountered errors in first pass, so not doing second pass: %s\n", full_name);
 		}
-		else if (f = open_file(full_name, "r"))
+		else if ((f = open_file(full_name, "r")))
 		{
 			second_pass(f);
 			fclose(f);
