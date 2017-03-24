@@ -13,10 +13,11 @@
 #define MAX_SYMBOL_SIZE 30
 #define MAX_FILE_NAME_SIZE 50
 
-typedef enum {NOT, NEW_LINE, SYMBOL, METHOD, OPERANT, REGISTER, ERROR, COMMENT} OP_TYPE;
+typedef enum {NOT, SYMBOL, ERROR} OP_TYPE;
 
 typedef enum {DATA, STRING, EXTERN, ENTRY} ADR_TYPE;
 
+/* for debugging */
 void op_type_to_string(OP_TYPE op_type, char buffer[]);
 
 

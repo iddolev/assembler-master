@@ -30,6 +30,11 @@ OP_TYPE is_label(char *s, int lineNum)
 {
 	int i=0;
 
+	if (s[0] == '\n' || s[0] == '\0')
+	{
+		return NOT;
+	}
+
 	if (!isalpha(s[i])) /*if the first char in the symbol is not alpha then it is not a legal symbol*/
 	{
 		/*printf("at line %d symbol name must start with a letter", lineNum);*/
@@ -42,28 +47,23 @@ OP_TYPE is_label(char *s, int lineNum)
 		i++;
 	}
 
-	if (i < MAX_SYMBOL_SIZE && s[i] == '\0') /* we stopped cuz we got to the end of the string and not because of an illegal char */
-	{
-		if (i <= 5 && (opcode_lookup(s) != NULL || is_register(s)))/*symbol name must not be a method or register name*/
-		{
-			printf("At line %d symbol name cannot be method or register name \n", lineNum);
-			return ERROR;
-		}
-		return SYMBOL; /*then it is legal*/
-	}
-	else if (s[i] != '\0')
-	{
-		printf("At line %d illegal symbol name \n", lineNum);
-		return ERROR;
-	}
-
-	if (i > MAX_SYMBOL_SIZE)
+	if (i == MAX_SYMBOL_SIZE)
 	{
 		printf("At line %d symbol name is too long \n", lineNum);
 		return ERROR;
+	} 
+
+	if (s[i] == '\0') /* we stopped cuz we got to the end of the string and not because of an illegal char */
+	{
+		if (opcode_lookup(s) != NULL || is_register(s))  /*symbol name must not be a method or register name*/
+		{
+			return NOT;
+		}
+		return SYMBOL; /*then it is legal*/
 	}
 
-	return NOT;
+	printf("At line %d illegal symbol name \n", lineNum);
+	return ERROR;
 }
 
 /* TODO: this shouldn't use "checkop" (renamed: check_operands), but rather different functions that will check for valid strings / arrays / whatever */

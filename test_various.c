@@ -5,6 +5,7 @@
 #include "main_data.h"
 #include "first_pass.h"
 #include "symbol_table.h"
+#include "instructions.h"
 
 
 void test_getNextToken()

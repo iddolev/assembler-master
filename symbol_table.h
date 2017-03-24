@@ -11,7 +11,11 @@ symbol_table_data* symbol_table_lookup(char *s);
 /* returns 1 if successful, else 0 */
 int symbol_table_add(char *name, int address, char is_code, char is_extern);
 
+/* clear symbol table */
+void symbol_table_clear();  
+
 /* for debugging */
 void print_symbol_table();
+
 
 

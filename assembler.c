@@ -1,21 +1,23 @@
 #include <stdio.h>
-#include <file.h>
 #include "externs.h"
-#include "firstPass.h"
-#include "secondPass.h"
+#include "first_pass.h"
+#include "second_pass.h"
 #include "write_data.h"
+#include "symbol_table.h"
+#include "opcodes.h"
+#include "utils.h"
 
 
 void run_on_file(char *file_name)
 {
 	FILE *f;
 	int errors;
-	char full_name[MAX_FILE_SIZE];
+	char full_name[MAX_FILE_NAME_SIZE];
 	
 	symbol_table_init();
 	init_main_data();
 	
-	sprints(full_name, "%s.as", file_name);
+	sprintf(full_name, "%s.as", file_name);
 
 	if (f = open_file(full_name, "r"))
 	{

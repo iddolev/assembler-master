@@ -4,6 +4,14 @@
 #include "symbol_table.h"
 #include "utils.h"
 #include "externs.h"
+#include "file_pass.h"
+#include "instructions.h"
+
+
+int first_pass(FILE *f)
+{
+	return file_pass(f, 1);
+}
 
 
 int getDataOp(char * linep, int lineNum)
@@ -112,14 +120,10 @@ int getStringOp(char * linep, int lineNum)
 	return 0;
 }
 
-int first_pass_data_command(ADR_TYPE type, char *linep, int line_num, int symbol_flag, char *label)
+int first_pass_data_command(ADR_TYPE type, char *linep, int line_num)
 {
 	int result;
 	
-	if (symbol_flag == 1)
-	{
-		symbol_table_add(label, MAIN_DATA.DC, 0, 0);
-	}
 	if (type == DATA)
 	{
 		result = getDataOp(linep, line_num); /*to do: should return a value for error_count*/
@@ -155,7 +159,7 @@ int first_pass_ee_command(ADR_TYPE type, char *linep, int line_num)
 	}
 
 	/* now need to check if there isn't anything in the line afterward i.e '.extern LOOP asdfthgj' - it's not legal*/
-	if (!verifyEndOfLine(linep, line_num))
+	if (!verifyEndOfLine(linep))
 	{
 		printf("Illegal extra at line %d: %s\n", line_num, linep);
 		return 0;

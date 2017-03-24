@@ -4,7 +4,13 @@
 #include "utils.h"
 #include "symbol_table.h"
 #include "externs.h"
+#include "file_pass.h"
 
+
+int second_pass(FILE *f)
+{
+	return file_pass(f, 2);
+}
 
 int second_pass_ee_command(ADR_TYPE type, char *line)
 {

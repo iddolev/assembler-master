@@ -99,7 +99,7 @@ char * getNextToken(char * linep, char * buffer)
 		linep++; /*skip blank lines and stuff*/
 	}
 
-	while(!is_separator(*linep) && !is_whitespace(*linep) && j < MAX_LINE_LENGTH)
+	while(!is_separator(*linep) && !is_whitespace(*linep) && j < MAX_SYMBOL_SIZE)
 	{
 		buffer[j] = *linep;    
 		linep++;

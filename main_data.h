@@ -26,3 +26,4 @@ void reset_main_data();
 /* for debug */
 void print_main_data();
 
+

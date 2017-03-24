@@ -10,29 +10,14 @@ void op_type_to_string(OP_TYPE op_type, char buffer[])
 		case NOT:
 			s = "NOT";
 			break;	
-		case NEW_LINE:
-			s = "NEW_LINE";
-			break;	
 		case SYMBOL:
 			s = "SYMBOL";
-			break;	
-		case METHOD:
-			s = "METHOD";
-			break;	
-		case OPERANT:
-			s = "OPERANT";
-			break;	
-		case REGISTER:
-			s = "REGISTER";
 			break;	
 		case ERROR:
 			s = "ERROR";
 			break;	
-		case COMMENT:
-			s = "COMMENT";
-			break;	
 		default:
-			s = "ILLEGAL!!!";
+			s = "ILLEGAL OP_TYPE!";
 			break;	
 
 	};
