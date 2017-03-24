@@ -10,12 +10,6 @@
 #include "externs.h"
 
 
-#define MAX_NUM_OPERANDS 2 /* Maximum number of operands in command */
-
-
-
-
-
 /* Check if an addressing method is valid for an operand, using the mode flags from opcode_item */
 int valid_method_for_operand(int modeflags, ADR_METHOD method) 
 {
@@ -36,131 +30,7 @@ int valid_method_for_operand(int modeflags, ADR_METHOD method)
 	return 0; /* Just in case "method" was passed a value not in the ADR_METHOD enum */
 }
 
-/* we read the rest of the line (word by word) with linep and getNextToken 
-and then save the operands in a strings array, then check if their legal */
-int check_operands(opcode_item *opcode, char * linep, int lineNum)
-{
-    char operands[MAX_NUM_OPERANDS][MAX_SYMBOL_SIZE]; /* should not be more than 2 operands but check for overlap */
-    int position = 0;
-    ADR_METHOD srcAdr, dstAdr;
-    char nextWord[MAX_SYMBOL_SIZE+1];
-    
-    if (opcode->group != 0)
-    {
-	while (*linep != '\n' && *linep != '\0')
-	{
-		linep = getNextToken(linep, nextWord);
-		if (position > 2)
-		{
-		       printf("At line %d illegal number of operands\n", lineNum);
-		       return 0; /*illegal number of operands*/
-		}
-		if (!linep)
-		{
-			printf("Illegal operand at line %d\n", lineNum);
-			return 0;
-		}
-		if (strlen(nextWord) > 0)
-		{ 
-			strcpy(operands[position], nextWord);
-			position++;
-		}
-		while (is_whitespace(*linep))
-		{
-			linep++; /*skip blank lines and stuff*/
-		}
-		if (*linep == '\n')
-		{
-			/* we successfully finished scanning the operands */
-			break;
-		}
-		if (*linep != ',')
-		{
-			printf("Illegal operand at line %d \n", lineNum);
-			return 0;   
-		}
-		else
-		{
-			linep++;
-		}
-	}
-    }
 
-    if (!verifyEndOfLine(linep))
-    {
-	printf("Illegal operand at line %d\n", lineNum);
-	return 0;
-    }
-
-    if (position == opcode->group)
-    {
-        if (position > 0)
-        {
-            if (position == 1)
-            {
-                dstAdr =get_addressing_method(operands[0], lineNum);
-                if (valid_method_for_operand(opcode->addressing_mode.dst, dstAdr))
-                {
-		    MAIN_DATA.IC += 2;
-                    return 1;
-                }
-                else
-                {
-                    printf("Incompatible addressing method for operand at line %d\n", lineNum);
-                    return 0;
-                }
-            }
-            else if (position == 2)
-            {
-                srcAdr = get_addressing_method(operands[0], lineNum);
-                dstAdr =get_addressing_method(operands[1], lineNum);
-                if (valid_method_for_operand(opcode->addressing_mode.src, srcAdr) && valid_method_for_operand(opcode->addressing_mode.dst, dstAdr))
-                {
-		    if (srcAdr == REGISTER)
-		    {
-			if (dstAdr == REGISTER)
-				MAIN_DATA.IC += 2;
-				return 1;
-		    }
-		    MAIN_DATA.IC += 3;
-                    return 1;
-                }
-                else
-                {
-                    printf("Incompatible addressing method for operand at line %d\n", lineNum);
-                    return 0;
-                }
-            }
-        }
-	MAIN_DATA.IC += 1;
-        return 1; /* no operands given for the given method as needed (i.e 'stop') */
-    }
-    else
-    {
-        printf("Unsuitable number of operands for method at line %d \n", lineNum);
-        return 0;
-    }
-    
-}
-
-/* Checks if a line is a legal operation line. Returns the length of the encoded line in processor words (either 1, 2 or 3) or 0 on error */
-int check_operation(char *opcode_word, char* rest_of_line, int line_num)
-{
-    opcode_item* opcode_data;
-    if ((opcode_data = opcode_lookup(opcode_word)) != NULL)
-    {
-        int operands = check_operands(opcode_data, rest_of_line, line_num);/* to do: move outside this function */
-        if (operands == 0)
-            return 0;
-        else
-            return 1; /*TODO!!! Figure out how to use the data from check_operands to calculate how many processor words we need 1, 2 or 3 */
-    } 
-    else 
-    {
-        printf("Line %d: invalid operation '%s'\n", line_num, opcode_word);
-        return 0;
-    }
-}
 
 
 char * adr_method_to_string(ADR_METHOD adr_method)
@@ -232,7 +102,7 @@ int is_register(char* s)
 
 ADR_METHOD check_index_method(char *s, int line_num)
 {
-	char buff[3];
+	char buff[3];      /* 2 characters for register name + terminating '\0' */
 	int len = strlen(s);
 
 	if (len == 6 && s[2] == '[' && s[5] == ']')
@@ -305,7 +175,7 @@ int collect_operands(parsed_operand operands[], char *linep, int line_num)
     
 	while (!is_end_char(*linep))
 	{
-		if (position > 2)
+		if (position >= 2)
 		{
 		       printf("At line %d illegal number of operands\n", line_num);
 		       return 0; 

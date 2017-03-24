@@ -176,9 +176,10 @@ int first_pass_ee_command(INSTRUCTION_TYPE type, char *linep, int line_num)
 	return 1; 
 }
 
+
 int first_pass_check_operands(char * opcode_word, char * linep, int line_num)
 {
-	parsed_operand operands[2];
+	parsed_operand operands[MAX_NUM_OPERANDS];
 	ADR_METHOD srcAdr, dstAdr;
 	int num_op;
 

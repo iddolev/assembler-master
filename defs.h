@@ -9,6 +9,8 @@
 
 #define CODE_SECTION_OFFSET 100   /* The first code instruction starts at address 100 */
 
+#define MAX_NUM_OPERANDS 2 /* Maximum number of operands in command */
+
 #define MAX_LINE_LENGTH 80
 #define MAX_SYMBOL_SIZE 30
 #define MAX_FILE_NAME_SIZE 50

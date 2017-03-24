@@ -156,7 +156,7 @@ void test_first_pass_check_operands1(char *opcode, char *linep)
 
 	printf("Testing first_pass_check_operands(\"%s\", \"%s\", 10)\n", opcode, linep);
 	ret = first_pass_check_operands(opcode, linep, 10);
-	printf("ret = %d\n", ret);
+	printf("ret = %d   ", ret);
 	printf("IC = %d\n", MAIN_DATA.IC);
 }
 
@@ -179,6 +179,8 @@ void test_first_pass_check_operands()
 	test_first_pass_check_operands1("mov", " #1, #2");
 	test_first_pass_check_operands1("mov", " r1, r2");
 	test_first_pass_check_operands1("mov", " r1[r2], r3[r4]");
+	test_first_pass_check_operands1("mov", " r1, r2 r3");
+	test_first_pass_check_operands1("mov", " r1, r2, r3");
 	test_first_pass_check_operands1("mov", " r1");
 	test_first_pass_check_operands1("mov", " ");
 }

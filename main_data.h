@@ -26,4 +26,6 @@ void reset_main_data();
 /* for debug */
 void print_main_data();
 
+void add_to_code_section(int value);
+
 

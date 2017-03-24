@@ -28,6 +28,16 @@ void reset_main_data()
 	init_main_data();
 }
 
+void add_to_code_section(int value)
+{
+	if (MAIN_DATA.IC >= CODE_SECTION_SIZE)
+	{
+		printf("Error: Too many code lines\n");
+		exit(0);
+	}
+	MAIN_DATA.CODE_SECTION[MAIN_DATA.IC++] = value;
+}
+
 void print_int_array(char *name, int array[], int size)
 {
 	int i;
