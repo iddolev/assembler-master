@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "opcodes.h"
 #include "operands.h" /* gret -rn "word to search" */
 #include "externs.h"
 
@@ -15,6 +16,8 @@ void test_check_operation()
 
 int main()
 {
+	opcode_table_init();
+
 	test_check_operation();
 	return 0;
 }
