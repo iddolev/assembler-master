@@ -81,6 +81,11 @@ int process_argument(parsed_operand *operand, int is_destination)
 			break;
 		case DIRECT:
 			symbol_data = symbol_table_lookup(operand->text);
+			if (!symbol_data)
+			{
+				printf("ERROR on second pass: symbol '%s' missing from symbol table\n", operand->text);
+				return -1;
+			}
 			if (symbol_data->is_extern)
 			{
 				encoding = encode_argument(EXTERNAL, NOT_USED);  
@@ -138,6 +143,8 @@ int second_pass_process_operands(char *opcode_word, char *linep)
 		add_to_code_section(encoding);
 
 		encoding = process_argument(&(operands[0]), 1);    /* 1 = is destination */
+		if (encoding == -1)    /* error */
+			return 0;   
 		add_to_code_section(encoding);
 		return 1;
 	}
@@ -153,13 +160,19 @@ int second_pass_process_operands(char *opcode_word, char *linep)
 			register_number1 = get_register_number(operands[0].text);
 			register_number2 = get_register_number(operands[1].text);
 			encoding = encode_registers(register_number1, register_number2);  
+			if (encoding == -1)    /* error */
+				return 0;   
 			add_to_code_section(encoding);
 		}
 		else
 		{
 			encoding = process_argument(&(operands[0]), 0);    /* 0 = is source */
+			if (encoding == -1)    /* error */
+				return 0;   
 			add_to_code_section(encoding);
 			encoding = process_argument(&(operands[1]), 1);    /* 1 = is destination */
+			if (encoding == -1)    /* error */
+				return 0;   
 			add_to_code_section(encoding);
 		}
 		return 1;

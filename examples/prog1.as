@@ -1,3 +1,2 @@
 .entry LOOP
-LOOP: stop
 
