@@ -24,8 +24,16 @@ void write_object_file(char *file_prefix)
         char full_name[MAX_FILE_NAME_SIZE];
         sprintf(full_name, "%s.ob", file_prefix);
 
+	if (MAIN_DATA.IC == 0 && MAIN_DATA.DC == 0)
+	{
+		printf("Nothing to write to %s so not creating this file\n", full_name);
+		remove(full_name);
+		return;
+	}
+
         if ((f = open_file(full_name, "w")))
         {
+		printf("Writing to %s\n", full_name);
                 for (line_num=0; line_num<MAIN_DATA.IC; ++line_num)
                 {
                         write_file_int(f, CODE_SECTION_OFFSET+line_num, MAIN_DATA.CODE_SECTION[line_num]);
@@ -34,12 +42,11 @@ void write_object_file(char *file_prefix)
                 {
                         write_file_int(f, CODE_SECTION_OFFSET+MAIN_DATA.IC+line_num, MAIN_DATA.DATA_SECTION[line_num]);
                 }
+	        fclose(f);
         }
-        fclose(f);
 }
 
-void write_e_file(char *file_prefix, char *file_extension,
-e_file_line* array[], int array_size)
+void write_e_file(char *file_prefix, char *file_extension, e_file_line* array[], int array_size)
 {
         FILE *f;
         int line_num;
@@ -47,8 +54,16 @@ e_file_line* array[], int array_size)
         char full_name[MAX_FILE_NAME_SIZE];
         sprintf(full_name, "%s.%s", file_prefix, file_extension);
 
+	if (array_size == 0)
+	{
+		printf("Nothing to write to %s so not creating this file\n", full_name);
+		remove(full_name);
+		return;	
+	}
+
         if ((f = open_file(full_name, "w")))
         {
+		printf("Writing to %s\n", full_name);
                 for (line_num = 0; line_num < array_size; ++line_num)
                 {
                         line = array[line_num];

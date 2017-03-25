@@ -15,6 +15,7 @@ void run_on_file(char *file_name)
 	FILE *f;
 	int errors;
 	char full_name[MAX_FILE_NAME_SIZE];
+	int success;
 	
 	symbol_table_init();
 	init_main_data();
@@ -32,9 +33,16 @@ void run_on_file(char *file_name)
 		}
 		else if ((f = open_file(full_name, "r")))
 		{
-			second_pass(f); /* calling to file pass with a flag for the second pass */
+			success = second_pass(f); /* calling to file pass with a flag for the second pass */
 			fclose(f);
-			write_data_to_files(file_name);
+			if (success)
+			{
+				write_data_to_files(file_name);
+			}
+			else
+			{
+				printf("Error during second pass, so not writing output files: %s\n", full_name); 
+			}
 		}
 	}
 	

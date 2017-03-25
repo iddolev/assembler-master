@@ -31,14 +31,18 @@ int second_pass_ee_command(INSTRUCTION_TYPE type, char *line)
 	symbol_table_data *s_data;
 	
 	getNextToken(line, next_word);
+	s_data = symbol_table_lookup(next_word);
+	if (!s_data)
+	{
+		printf("ERROR on second pass: symbol '%s' missing from symbol table\n", next_word);
+		return 0;
+	}
 	if (type == ENTRY)
 	{
-		s_data = symbol_table_lookup(next_word);
 		add_to_entry_section(s_data->address, next_word);
 	}
 	else  /* type == EXTERN */
 	{
-		s_data = symbol_table_lookup(next_word);
 		add_to_extern_section(s_data->address, next_word);
 	}
 	return 1;
