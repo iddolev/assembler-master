@@ -1,2 +1,2 @@
-XXX: .extern LOOP
+mov r1 r3
 

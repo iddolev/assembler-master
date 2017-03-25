@@ -61,6 +61,7 @@ int symbol_table_add(char *name, int address, char is_code, char is_extern)
         data->address = address;
         data->is_code = is_code;
         data->is_extern = is_extern;
+	data->was_used = 0;
 	if (!hash_table_add(&symbol_table, name, data))
 	{
 		printf ("Memory problem in symbol table\n");

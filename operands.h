@@ -27,7 +27,7 @@ int is_label_operand(char* s);
 ADR_METHOD get_addressing_method(char *s, int line_num);
 char * adr_method_to_string(ADR_METHOD adr_method);
 
-int collect_operands(parsed_operand operands[], char *linep, int line_num);
+int collect_operands(parsed_operand operands[], int expected_num_operands, char *linep, int line_num);
 int valid_method_for_operand(int modeflags, ADR_METHOD method);
 
 int encode_command(int group, int opcode, ADR_METHOD src, ADR_METHOD dst);

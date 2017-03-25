@@ -64,7 +64,7 @@ int file_pass(FILE *file, int pass_number)
 				linep = getNextToken(linep, next_word);
 				if (!linep)
 				{
-					printf("No content after label in line %d\n", line_num);
+					printf("Illegal or no content after label in line %d\n", line_num);
 					error_count++;
 					continue;
 				}

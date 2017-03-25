@@ -1,7 +1,9 @@
 typedef struct symbol_table_data { /* table entry */
-    int address;
-    char is_code;     /* boolean for whether the symbol is in the code section (1) or in the data section (0) */
-    char is_extern;      /* boolean for whether the symbol is extern */
+	int address;
+	char is_code;     /* boolean for whether the symbol is in the code section (1) or in the data section (0) */
+	char is_extern;      /* boolean for whether the symbol is extern */
+	char was_used;       /* after writing an .entry information to .ent file, this is set to 1, 
+				so we won't write the information twice in case the same .entry statement is encountered */
 } symbol_table_data;
 
 /* initializes the symbol table */

@@ -164,10 +164,9 @@ ADR_METHOD get_addressing_method(char *s, int line_num)
 	return ILLEGAL_OPERAND;
 }
 
-/* returns number of operands: 1, or 2
-   and fills operands[]
+/* fills operands[] with expected number of operands
    if error, returns 0 */
-int collect_operands(parsed_operand operands[], char *linep, int line_num)
+int collect_operands(parsed_operand operands[], int expected_num_operands, char *linep, int line_num)
 {
 	int position = 0;
 	ADR_METHOD addressing_method;
@@ -175,11 +174,6 @@ int collect_operands(parsed_operand operands[], char *linep, int line_num)
     
 	while (!is_end_char(*linep))
 	{
-		if (position >= 2)
-		{
-		       printf("At line %d illegal number of operands\n", line_num);
-		       return 0; 
-		}
 		linep = getNextToken(linep, nextWord);
 		if (!linep)
 		{
@@ -203,14 +197,24 @@ int collect_operands(parsed_operand operands[], char *linep, int line_num)
 			/* we successfully finished scanning the operands */
 			break;
 		}
+		if (position == expected_num_operands)
+		{
+			printf("At line %d illegal content after last expected operand\n", line_num);
+			return 0;
+		}
 		if (*linep != ',')
 		{
-			printf("Missing comma at line %d \n", line_num);
+			printf("Missing comma between operands at line %d \n", line_num);
 			return 0;
 		}
 		linep++;
 	}
-	return position;
+	if (position != expected_num_operands)
+	{
+	        printf("Unsuitable number of operands at line %d \n", line_num);
+		return 0;
+	}
+	return 1;
 }
 
 int encode_command(int group, int opcode, ADR_METHOD src, ADR_METHOD dst)

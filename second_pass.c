@@ -53,15 +53,22 @@ int second_pass_ee_command(INSTRUCTION_TYPE type, char *line, int line_num)
 	}
 	if (type == ENTRY)
 	{
+		if (s_data->was_used)
+		{
+			printf("Warning: duplicate .entry %s statement in line %d\n", next_word, line_num);
+			return 1;   /* don't write it again in the .ent file */
+		}
+		if (s_data->is_extern)
+		{
+			printf("Error in line %d: .entry for symbol %s is also declared as extern\n", line_num, next_word);
+			return 0;
+		}
 		address = s_data->address;
 		address = s_data->is_code ? code_address(address) : data_address(address);
 		add_to_entry_section(address, next_word);
+		s_data->was_used = 1;   /* so that we won't write it again in the .ent file if duplicate .entry statement */
 	}
-	else  /* type == EXTERN */
-	{
-		address = code_address(s_data->address);
-		add_to_extern_section(address, next_word);
-	}
+	/* if type == EXTERN -- nothing to do in second pass */
 	return 1;
 }
 
@@ -71,7 +78,7 @@ int process_argument(parsed_operand *operand, int is_destination, int line_num)
 	symbol_table_data* symbol_data;
 	int value;
 	int encoding = 0;
-	int register_number1, register_number2;
+	int register_number1, register_number2, address;
 
 	switch (operand->addressing_method)
 	{
@@ -88,7 +95,10 @@ int process_argument(parsed_operand *operand, int is_destination, int line_num)
 			}
 			if (symbol_data->is_extern)
 			{
-				encoding = encode_argument(EXTERNAL, NOT_USED);  
+				encoding = encode_argument(EXTERNAL, NOT_USED);
+				/* In addition, we need to add the address IC to the extern file with this extern symbol */
+				address = code_address(MAIN_DATA.IC);
+				add_to_extern_section(address, operand->text);
 			}
 			else if (symbol_data->is_code)
 			{
@@ -124,7 +134,6 @@ int second_pass_process_operands(char *opcode_word, char *linep, int line_num)
 {
 	parsed_operand operands[MAX_NUM_OPERANDS];
 	ADR_METHOD srcAdr, dstAdr;
-	int num_op;
 	int encoding;
 	int register_number1, register_number2;
 
@@ -135,8 +144,12 @@ int second_pass_process_operands(char *opcode_word, char *linep, int line_num)
 		add_to_code_section(encoding);
 		return 1;
 	}
-	num_op = collect_operands(operands, linep, 0);
-	if (num_op == 1)
+	if (!collect_operands(operands, opcode_data->group, linep, 0))
+	{
+		printf("Unexpected error in collect_operands\n");
+		return 0;
+	}
+	if (opcode_data->group == 1)
 	{
                 dstAdr = operands[0].addressing_method;
 		encoding = encode_command(opcode_data->group, opcode_data->opcode, ADR_METHOD_DONT_CARE, dstAdr);
@@ -148,7 +161,7 @@ int second_pass_process_operands(char *opcode_word, char *linep, int line_num)
 		add_to_code_section(encoding);
 		return 1;
 	}
-	if (num_op == 2)
+	else if (opcode_data->group == 2)
 	{
                 srcAdr = operands[0].addressing_method;
                 dstAdr = operands[1].addressing_method;
