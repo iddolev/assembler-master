@@ -90,7 +90,11 @@ int file_pass(FILE *file, int pass_number)
 			{
 				if (symbol_flag)
 				{
-					symbol_table_add(label, MAIN_DATA.DC, 0, 0);
+					if (!symbol_table_add_and_verify(label, MAIN_DATA.DC, 0, 0, line_num))
+					{
+						error_count++;
+						continue;
+					}
 				}
 				if (!first_pass_data_command(instruction_type, linep, line_num))
 					error_count++;
@@ -104,7 +108,7 @@ int file_pass(FILE *file, int pass_number)
 				if (pass_number == 1)
 				{
 					printf("Warning: Ignoring label before extern/entry instruction at line %d\n", line_num);
-					/* not counting as error */
+					/* not considering this as error */
 				}
 			}
 			if (pass_number == 1)
@@ -125,7 +129,13 @@ int file_pass(FILE *file, int pass_number)
 		if (symbol_flag)
 		{
 			if (pass_number == 1)
-				symbol_table_add(label, MAIN_DATA.IC, 1, 0);
+			{
+				if (!symbol_table_add_and_verify(label, MAIN_DATA.IC, 1, 0, line_num))
+				{
+					error_count++;
+					continue;
+				}
+			}
 		}
 
 		if (pass_number == 1)

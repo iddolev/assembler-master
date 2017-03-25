@@ -166,7 +166,8 @@ int first_pass_ee_command(INSTRUCTION_TYPE type, char *linep, int line_num)
 
 	if (type == EXTERN)
 	{
-		symbol_table_add(next_word, 0, 0, 1);
+		if (!symbol_table_add_and_verify(next_word, 0, 0, 1, line_num))
+			return 0; 
 	}
 	/* if type == ENTRY, no need to do anything in first pass */
 
