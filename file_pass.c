@@ -21,7 +21,7 @@ int file_pass(FILE *file, int pass_number)
 	char * linep;
 	char next_word[MAX_SYMBOL_SIZE+1]; /* +1 for terminating '\0' */
 	char label[MAX_SYMBOL_SIZE+1];
-	int error_count, len;
+	int error_count = 0, len;
 	OP_TYPE op_type;
 	INSTRUCTION_TYPE instruction_type;
 	char line[MAX_LINE_LENGTH+2]; /*+2 for the '\n' and '\0' char*/
@@ -133,13 +133,6 @@ int file_pass(FILE *file, int pass_number)
 		else  /* second pass */
 		{
 			second_pass_process_operands(next_word, linep);
-		}
-
-		/* check if there isn't anything more in the line */
-		if (!verifyEndOfLine(linep))
-		{
-			error_count++;
-			printf("Illegal command at line %d \n", line_num);
 		}
 	}
 	return error_count;

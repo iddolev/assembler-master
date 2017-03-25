@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "utils.h"
 #include "opcodes.h"
 #include "first_pass.h"
@@ -185,6 +186,62 @@ void test_first_pass_check_operands()
 	test_first_pass_check_operands1("mov", " ");
 }
 
+void to_binary_string(int value, int num_bits, char buffer[])
+{
+	int i, bit_mask, bit_value;
+	for (i=num_bits-1; i>=0; --i)
+	{
+		bit_mask = 1 << i;
+		bit_value = value & bit_mask;
+		buffer[num_bits-1-i] = bit_value ? '1' : '0'; 
+	}
+	buffer[num_bits] = '\0';
+	/* printf("to_binary_string(%d, %d) = %s\n", value, num_bits, buffer); */
+}
+
+void encoding_to_str(int encoding, int sizes[], int length, char output[])
+{
+	int accum[10];
+	int i, mask, size;
+	char buf[10];
+	int result_pos=0;
+
+	for (i=length-1; i>=0; --i)
+	{
+		size = sizes[i];
+		mask = (1 << size) - 1;
+		accum[i] = encoding & mask;
+		encoding >>= size;
+	}
+	for (i=0; i<length; ++i)
+	{
+		to_binary_string(accum[i], sizes[i], buf);
+		strncpy(output+result_pos, buf, sizes[i]);
+		result_pos += sizes[i];
+		output[result_pos++] = '-';
+	}
+	output[result_pos-1] = '\0';   /* replace the last '-' with '\0' */
+}
+
+void test_encode_command1(char *opname, ADR_METHOD src, ADR_METHOD dst)
+{
+	int encoding;
+	opcode_item* opcode_data = opcode_lookup(opname);
+	int sizes[] = {3, 2, 4, 2, 2, 2};
+	char output[20];
+	
+	printf("Testing encode_command(group=%d, opname=%s, src=%s, dst=%s)\n", opcode_data->group, opname, adr_method_to_string(src), adr_method_to_string(dst));
+	encoding = encode_command(opcode_data->group, opcode_data->opcode, src, dst);
+	encoding_to_str(encoding, sizes, 6, output);
+	printf("Result:  binary = %s  hex = %04X\n", output, encoding);
+}
+
+void test_encode_command()
+{
+	test_encode_command1("stop", ADR_METHOD_DONT_CARE, ADR_METHOD_DONT_CARE);
+	test_encode_command1("mov", DIRECT, INDEX);
+}
+
 void nl()
 {
 	printf("\n");
@@ -200,6 +257,7 @@ void print_menu(char *program)
 	printf("5: test process_string_instruction\n");
 	printf("6: test first_pass_ee_command\n");
 	printf("7: test first_pass_check_operands\n");
+	printf("8: test encode_command\n");
 }
 
 int main(int argc, char* argv[])
@@ -238,6 +296,9 @@ int main(int argc, char* argv[])
 			break;
 		case 7:
 			test_first_pass_check_operands();
+			break;
+		case 8:
+			test_encode_command();
 			break;
 		default:
 			print_menu(argv[0]);

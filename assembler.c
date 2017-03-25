@@ -20,6 +20,7 @@ void run_on_file(char *file_name)
 	
 	sprintf(full_name, "%s.as", file_name);
 
+	printf("Processing file: %s\n", full_name);
 	if ((f = open_file(full_name, "r")))
 	{
 		errors = first_pass(f);
