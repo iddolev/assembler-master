@@ -10,6 +10,7 @@ typedef struct main_data {
 	int DC;  /* Data counter - for DATA_SECTION */
 	int YC;  /* counter for ENTRY_SECTION */
 	int XC;  /* counter for EXTERN_SECTION */
+	int DATA_OFFSET;   /* data offset = IC of end of first pass */
 	int CODE_SECTION[CODE_SECTION_SIZE];
 	int DATA_SECTION[DATA_SECTION_SIZE];
 	e_file_line* ENTRY_SECTION[ENTRY_SECTION_SIZE];

@@ -11,8 +11,21 @@
 
 int second_pass(FILE *f)
 {
+	MAIN_DATA.DATA_OFFSET = MAIN_DATA.IC;   /* data offset = IC of end of first pass */
 	MAIN_DATA.IC = 0; /* restart the IC for the second pass */
 	return file_pass(f, 2);
+}
+
+/* Address is from first pass (starting from 0). Return the offset address for the final code section */
+int code_address(int address)
+{
+	return CODE_SECTION_OFFSET + address;
+}
+
+/* Address is from first pass (starting from 0). Return the offset address for the final data section */
+int data_address(int address)
+{
+	return CODE_SECTION_OFFSET + MAIN_DATA.DATA_OFFSET + address;
 }
 
 int get_register_number(char *s)
@@ -29,6 +42,7 @@ int second_pass_ee_command(INSTRUCTION_TYPE type, char *line)
 {
 	char next_word[MAX_SYMBOL_SIZE];
 	symbol_table_data *s_data;
+	int address;
 	
 	getNextToken(line, next_word);
 	s_data = symbol_table_lookup(next_word);
@@ -39,11 +53,14 @@ int second_pass_ee_command(INSTRUCTION_TYPE type, char *line)
 	}
 	if (type == ENTRY)
 	{
-		add_to_entry_section(s_data->address, next_word);
+		address = s_data->address;
+		address = s_data->is_code ? code_address(address) : data_address(address);
+		add_to_entry_section(address, next_word);
 	}
 	else  /* type == EXTERN */
 	{
-		add_to_extern_section(s_data->address, next_word);
+		address = code_address(s_data->address);
+		add_to_extern_section(address, next_word);
 	}
 	return 1;
 }
@@ -70,13 +87,11 @@ int process_argument(parsed_operand *operand, int is_destination)
 			}
 			else if (symbol_data->is_code)
 			{
-				encoding = encode_argument(RELOCATABLE, symbol_data->address); 
-				/* to do: fix address */
+				encoding = encode_argument(RELOCATABLE, code_address(symbol_data->address)); 
 			}
 			else /* symbol is of .data or .string line */
 			{
-				encoding = encode_argument(RELOCATABLE, symbol_data->address); 
-				/* to do: fix address */
+				encoding = encode_argument(RELOCATABLE, data_address(symbol_data->address)); 
 			}
 			break;
 		case INDEX:
