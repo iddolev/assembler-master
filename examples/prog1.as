@@ -1,1 +1,2 @@
-prn #-5
+XXX: .extern LOOP
+

@@ -20,16 +20,21 @@ opcode_item *opcode_lookup(char *s)
 	return NULL; /* not found */
 }
 
-/* symbol_table_add: Add an item to the symbol table. 
-  If the item already exists, its value will be overwritten. 
-  returns 0 on failure */
+/* opcode_add: Add an item to the opcode table. 
+  If the item already exists, fail and return 0. */
 int opcode_add(char *name,
                unsigned char opcode,
                unsigned char group,
                unsigned char addressing_mode_src,
                unsigned char addressing_mode_dst) 
 {
-	opcode_item *data = (opcode_item*) malloc(sizeof(opcode_item));
+	opcode_item *data;
+	if (opcode_lookup(name))
+	{
+		printf("Error: symbol '%s' is already in opcode table\n", name);
+		return 0;
+	}
+	data = (opcode_item*) malloc(sizeof(opcode_item));
 	if (!data) 
 	{
 		return 0;
@@ -70,5 +75,8 @@ int opcode_table_init()
 	allocated += opcode_add("jsr",  13, 1, ADDRESSING_NONE, ADDRESSING_DATA);
 	allocated += opcode_add("rts",  14, 0, ADDRESSING_NONE, ADDRESSING_NONE);
 	allocated += opcode_add("stop", 15, 0, ADDRESSING_NONE, ADDRESSING_NONE);
+	if (allocated != 16)
+		allocated = 0;
 	return allocated;
 }
+

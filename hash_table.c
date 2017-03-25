@@ -21,6 +21,25 @@ void init_hash_table(hash_table *table)
 	}
 }
 
+void clear_hash_table(hash_table *table)
+{
+	int i;
+	hash_table_item *np, *np1;
+
+	for (i=0; i<HASH_TABLE_SIZE; ++i)
+	{
+		np = table->_data[i];
+		while (np)
+		{
+			free (np->data);
+			np1 = np;
+			np = np->next;
+			free (np1);
+		}
+	}
+	init_hash_table(table);
+}
+
 /* hash_table_lookup: Look up an item in the hash table for key s, returns NULL if not found */
 hash_table_item *hash_table_lookup(hash_table *table, char *s) {
 	hash_table_item *np;

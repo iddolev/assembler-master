@@ -2,8 +2,8 @@
 
 #define HASH_TABLE_SIZE 101
 
-typedef struct hash_table_item1 { /* table entry */
-	struct hash_table_item1 * next;
+typedef struct hash_table_item { /* table entry */
+	struct hash_table_item * next;
 	char * name;
 	void * data;
 } hash_table_item;
@@ -13,8 +13,10 @@ typedef struct hash_table {
 } hash_table;
 
 void init_hash_table(hash_table *table);
+void clear_hash_table(hash_table *table);
 hash_table_item* hash_table_lookup(hash_table* table, char *s);
 hash_table_item* hash_table_add(hash_table* table, char *name, void *data);
+
 
 /* Example usage:
 hash_table my_table;

@@ -36,7 +36,6 @@ void run_on_file(char *file_name)
 			success = second_pass(f); /* calling to file pass with a flag for the second pass */
 			fclose(f);
 			clear_output_files(file_name);
-			printf("HERE %d\n", success);
 			if (success)
 			{
 				write_data_to_files(file_name);
@@ -49,7 +48,7 @@ void run_on_file(char *file_name)
 	}
 	
 	reset_main_data();
-	symbol_table_clear();  /* todo (add clear_hash_table(hash_table*) in hash_table.c, and use in symbol_table.c */ 
+	symbol_table_clear();  
 }
 
 void run_on_files(char *file_names[], int num_files)
