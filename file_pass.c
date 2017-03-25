@@ -114,7 +114,7 @@ int file_pass(FILE *file, int pass_number)
 			}
 			else
 			{
-				if (!second_pass_ee_command(instruction_type, linep))
+				if (!second_pass_ee_command(instruction_type, linep, line_num))
 				{
 					return 0;    /* FATAL MEMORY ALLOCATION ERROR */
 				}
@@ -135,7 +135,7 @@ int file_pass(FILE *file, int pass_number)
 		}
 		else  /* second pass */
 		{
-			if (!second_pass_process_operands(next_word, linep))
+			if (!second_pass_process_operands(next_word, linep, line_num))
 			{
 				return 0;    /* FATAL ERROR */
 			}

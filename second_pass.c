@@ -38,7 +38,7 @@ int get_value_from_immediate(char *s)
 	return atoi(s+1);   /* skip initial s[0] == '#' */
 }
 
-int second_pass_ee_command(INSTRUCTION_TYPE type, char *line)
+int second_pass_ee_command(INSTRUCTION_TYPE type, char *line, int line_num)
 {
 	char next_word[MAX_SYMBOL_SIZE];
 	symbol_table_data *s_data;
@@ -48,7 +48,7 @@ int second_pass_ee_command(INSTRUCTION_TYPE type, char *line)
 	s_data = symbol_table_lookup(next_word);
 	if (!s_data)
 	{
-		printf("ERROR on second pass: symbol '%s' missing from symbol table\n", next_word);
+		printf("ERROR on second pass: symbol '%s' missing from symbol table at line %d\n", next_word, line_num);
 		return 0;
 	}
 	if (type == ENTRY)
@@ -66,7 +66,7 @@ int second_pass_ee_command(INSTRUCTION_TYPE type, char *line)
 }
 
 /* is_destination == 1 means: destination, 0 means: source */
-int process_argument(parsed_operand *operand, int is_destination)
+int process_argument(parsed_operand *operand, int is_destination, int line_num)
 {
 	symbol_table_data* symbol_data;
 	int value;
@@ -83,7 +83,7 @@ int process_argument(parsed_operand *operand, int is_destination)
 			symbol_data = symbol_table_lookup(operand->text);
 			if (!symbol_data)
 			{
-				printf("ERROR on second pass: symbol '%s' missing from symbol table\n", operand->text);
+				printf("ERROR on second pass: symbol '%s' missing from symbol table at line %d\n", operand->text, line_num);
 				return -1;
 			}
 			if (symbol_data->is_extern)
@@ -120,7 +120,7 @@ int process_argument(parsed_operand *operand, int is_destination)
 
 /* Assuming this is called only in second pass, only on legal input,
    so skipping all checks */
-int second_pass_process_operands(char *opcode_word, char *linep)
+int second_pass_process_operands(char *opcode_word, char *linep, int line_num)
 {
 	parsed_operand operands[MAX_NUM_OPERANDS];
 	ADR_METHOD srcAdr, dstAdr;
@@ -142,7 +142,7 @@ int second_pass_process_operands(char *opcode_word, char *linep)
 		encoding = encode_command(opcode_data->group, opcode_data->opcode, ADR_METHOD_DONT_CARE, dstAdr);
 		add_to_code_section(encoding);
 
-		encoding = process_argument(&(operands[0]), 1);    /* 1 = is destination */
+		encoding = process_argument(&(operands[0]), 1, line_num);    /* 1 = is destination */
 		if (encoding == -1)    /* error */
 			return 0;   
 		add_to_code_section(encoding);
@@ -166,11 +166,11 @@ int second_pass_process_operands(char *opcode_word, char *linep)
 		}
 		else
 		{
-			encoding = process_argument(&(operands[0]), 0);    /* 0 = is source */
+			encoding = process_argument(&(operands[0]), 0, line_num);    /* 0 = is source */
 			if (encoding == -1)    /* error */
 				return 0;   
 			add_to_code_section(encoding);
-			encoding = process_argument(&(operands[1]), 1);    /* 1 = is destination */
+			encoding = process_argument(&(operands[1]), 1, line_num);    /* 1 = is destination */
 			if (encoding == -1)    /* error */
 				return 0;   
 			add_to_code_section(encoding);
