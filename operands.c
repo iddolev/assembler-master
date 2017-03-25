@@ -238,7 +238,39 @@ int encode_registers(int register1, int register2)
 int encode_argument(CODING_TYPE coding_type, int value)
 {
 	int encoding = 0;
-	encoding = push_to_encoding(encoding, 13, value);
+	int max, mask;
+	int num_bits = VALUE_REPRESENTATION_NUMBER_OF_BITS;
+
+	if (value >= 0)
+	{
+		/* Since we are using a complement-2 representation using 13 bits, 
+		   and we reserve the most significant bit of the 13 bits to mark a negative number,
+		   this means we can only use 12 bits to encode a positive number.
+		   So if value is larger than what can be encoded in 12 bits, this is an error */
+		max = 1 << (num_bits-1);
+		if (value >= max)
+		{
+			printf("Cannot encode the value %d into only %d bits (complement-2)\n", value, num_bits);
+			return -1;
+		}
+	}
+	else  /* value < 0 */
+	{
+		/* If value is a negative number, its form is 111...111.
+                   As with positive numbers above, there is a limit to the possible numbers we can accept: */
+		max = 1 << (num_bits-1);
+		if (-value > max)  /* The largest possible negative number in binary is represented as 100...000.
+					Its absolute value, (-value) is == max.
+					So if -value > max we have an error */
+		{
+			printf("Cannot encode the value %d into only %d bits (complement-2)\n", value, num_bits);
+			return -1;
+		}
+
+		mask = (1 << num_bits) - 1;    /*  mask = 0000...01111111111111  (13 times 1 bit, rest is zero) */
+		value = value & mask;   /* the complement-2 representation over 13 bits uses the 13 least significant bits of value */
+	}
+	encoding = push_to_encoding(encoding, num_bits, value);
 	encoding = push_to_encoding(encoding, 2, coding_type);
 	return encoding;
 }

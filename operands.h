@@ -1,6 +1,8 @@
 #include "defs.h"
 
-#define MAX_OPERANDS 2
+#define MAX_OPERANDS 2    /* the maximal number of operands for an opcode */
+#define VALUE_REPRESENTATION_NUMBER_OF_BITS 13    /* how many bits we are using to encode a value (2-complement) */
+
 
 typedef enum {IMMEDIATE=0, DIRECT=1, INDEX=2, REGISTER=3, ILLEGAL_OPERAND=-1, OTHER=-2} ADR_METHOD;
 #define ADR_METHOD_DONT_CARE 0

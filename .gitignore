@@ -34,3 +34,12 @@
 
 # Misc
 *~ 
+
+# more
+examples/*.ob
+examples/*.ext
+examples/*.ent
+.kdev4
+*.kdev4
+*.txt
+
