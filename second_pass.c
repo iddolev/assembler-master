@@ -76,16 +76,16 @@ int process_argument(parsed_operand *operand, int is_destination)
 			}
 			break;
 		case INDEX:
-			register_number1 = get_register_number(operand->text);
-			register_number2 = get_register_number(operand->text+3);    /* skip initial register + '[' */
+			register_number2 = get_register_number(operand->text);
+			register_number1 = get_register_number(operand->text+3);    /* skip initial register + '[' */
 			encoding = encode_registers(register_number1, register_number2);  
 			break;  
 		case REGISTER:
 			register_number1 = get_register_number(operand->text);
 			if (is_destination)
-				encoding = encode_registers(register_number1, NOT_USED);  
+				encoding = encode_registers(NOT_USED, register_number1);  
 			else
-				encoding = encode_registers(NOT_USED, register_number1);   
+				encoding = encode_registers(register_number1, NOT_USED);   
 			break;
 		default:
 			printf("UNEXPECTED ERROR\n");
