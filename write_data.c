@@ -99,3 +99,17 @@ void write_data_to_files(char *file_prefix)
         write_entry_file(file_prefix);
         write_extern_file(file_prefix);
 }
+
+void clear_output_files(char *file_prefix)
+{
+	char* suffixes[] = {"ob", "ent", "ext"};
+	int i;
+        char full_name[MAX_FILE_NAME_SIZE];
+	
+	for (i=0; i<3; i++)
+	{
+	        sprintf(full_name, "%s.%s", file_prefix, suffixes[i]);
+		remove(full_name);
+	}
+}
+

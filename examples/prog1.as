@@ -1,2 +1,1 @@
-.entry LOOP
-
+prn #-5
