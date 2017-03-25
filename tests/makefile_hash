@@ -1,0 +1,3 @@
+test_hash: test_hash_table.c ../hash_table.c ../utils.c
+	gcc -o test_hash test_hash_table.c ../hash_table.c ../utils.c -I.. -pedantic -Wall -Werror -ansi
+

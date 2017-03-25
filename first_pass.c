@@ -9,6 +9,7 @@
 #include "opcodes.h"
 #include "operands.h"
 
+/* functions for the first pass */
 
 int first_pass(FILE *f)
 {
@@ -173,21 +174,21 @@ int first_pass_ee_command(INSTRUCTION_TYPE type, char *linep, int line_num)
 }
 
 
-int first_pass_check_operands(char * opcode_word, char * linep, int line_num)
+int first_pass_check_operation(char * opcode_word, char * linep, int line_num)
 {
 	parsed_operand operands[MAX_NUM_OPERANDS];
 	ADR_METHOD srcAdr, dstAdr;
 	int num_op;
 
-	opcode_item* opcode_data = opcode_lookup(opcode_word);
+	opcode_item* opcode_data = opcode_lookup(opcode_word); /* check if legal method name */
 	if (!opcode_data)
 	{
 		printf("Line %d: invalid opcode '%s'\n", line_num, opcode_word);
 		return 0;
 	}
-	if (opcode_data->group == 0)
+	if (opcode_data->group == 0) /* if the method shouldn't get any operands */
 	{
-		if (!verifyEndOfLine(linep))
+		if (!verifyEndOfLine(linep)) /* there should be nothing after the method name */
 		{
 			printf("Line %d: No operands should appear after opcode '%s'\n", line_num, opcode_word);
 			return 0;
@@ -196,11 +197,11 @@ int first_pass_check_operands(char * opcode_word, char * linep, int line_num)
 		return 1;
 	}
 	num_op = collect_operands(operands, linep, line_num);
-	if (num_op == 0)
+	if (num_op == 0) /* this is not legal because we expect 1 to 2 operands (we already checked the case of no operands) */
 	{
 		return 0;
 	}
-	if (num_op != opcode_data->group)
+	if (num_op != opcode_data->group) /* the number of operands we collected is different than the number of operand that should be */
 	{
 	        printf("Unsuitable number of operands at line %d \n", line_num);
 		return 0;

@@ -1,5 +1,4 @@
-/* NOTE: This is an experiment to try to make the pass on a file generic and shared between the first pass and second pass.
-   Don't use this file yet. */
+/* This is a function to try to make the pass on a file generic and shared between the first pass and second pass. */
    
 #include <stdio.h>
 #include <string.h>
@@ -14,7 +13,7 @@
 #include "instructions.h"
 
 
-/* pass_number should be 1 or 2 */
+/* pass_number should be 1 or 2 for first and second pass */
 int file_pass(FILE *file, int pass_number)
 {
 	int line_num = -1, symbol_flag = 0;
@@ -29,6 +28,7 @@ int file_pass(FILE *file, int pass_number)
 	while ((linep = fgets(line, MAX_LINE_LENGTH+10, file)))
 	{
 		line_num++;     /* we started with line_num == -1 */
+		symbol_flag = 0;
 		len = strlen(line);
 		if (len > MAX_LINE_LENGTH)
 		{
@@ -101,8 +101,11 @@ int file_pass(FILE *file, int pass_number)
 		{
 			if (symbol_flag)
 			{
-				printf("Warning: Ignoring label before extern/entry instruction at line %d\n", line_num);
-				/* not counting as error */
+				if (pass_number == 1)
+				{
+					printf("Warning: Ignoring label before extern/entry instruction at line %d\n", line_num);
+					/* not counting as error */
+				}
 			}
 			if (pass_number == 1)
 			{
@@ -127,7 +130,7 @@ int file_pass(FILE *file, int pass_number)
 
 		if (pass_number == 1)
 		{
-			if (!first_pass_check_operands(next_word, linep, line_num))
+			if (!first_pass_check_operation(next_word, linep, line_num))
 				error_count++;
 		}
 		else  /* second pass */

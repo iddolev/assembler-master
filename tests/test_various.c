@@ -151,39 +151,39 @@ void test_first_pass_ee_command()
 	reset_main_data();
 }
 
-void test_first_pass_check_operands1(char *opcode, char *linep)
+void test_first_pass_check_operation1(char *opcode, char *linep)
 {
 	int ret;
 
-	printf("Testing first_pass_check_operands(\"%s\", \"%s\", 10)\n", opcode, linep);
-	ret = first_pass_check_operands(opcode, linep, 10);
+	printf("Testing first_pass_check_operation(\"%s\", \"%s\", 10)\n", opcode, linep);
+	ret = first_pass_check_operation(opcode, linep, 10);
 	printf("ret = %d   ", ret);
 	printf("IC = %d\n", MAIN_DATA.IC);
 }
 
-void test_first_pass_check_operands()
+void test_first_pass_check_operation()
 {
-	test_first_pass_check_operands1("stop", "");
-	test_first_pass_check_operands1("stop", " loop");
-	test_first_pass_check_operands1("prn", " #1");
-	test_first_pass_check_operands1("prn", " xxx");
-	test_first_pass_check_operands1("prn", " r1");
-	test_first_pass_check_operands1("prn", " r1[r2]");
-	test_first_pass_check_operands1("prn", " r1 r2");
-	test_first_pass_check_operands1("prn", " r1, r2");
-	test_first_pass_check_operands1("clr", " #1");
-	test_first_pass_check_operands1("clr", " xxx");
-	test_first_pass_check_operands1("clr", " r1");
-	test_first_pass_check_operands1("clr", " r1[r2]");
-	test_first_pass_check_operands1("clr", "");
-	test_first_pass_check_operands1("mov", " x, y");
-	test_first_pass_check_operands1("mov", " #1, #2");
-	test_first_pass_check_operands1("mov", " r1, r2");
-	test_first_pass_check_operands1("mov", " r1[r2], r3[r4]");
-	test_first_pass_check_operands1("mov", " r1, r2 r3");
-	test_first_pass_check_operands1("mov", " r1, r2, r3");
-	test_first_pass_check_operands1("mov", " r1");
-	test_first_pass_check_operands1("mov", " ");
+	test_first_pass_check_operation1("stop", "");
+	test_first_pass_check_operation1("stop", " loop");
+	test_first_pass_check_operation1("prn", " #1");
+	test_first_pass_check_operation1("prn", " xxx");
+	test_first_pass_check_operation1("prn", " r1");
+	test_first_pass_check_operation1("prn", " r1[r2]");
+	test_first_pass_check_operation1("prn", " r1 r2");
+	test_first_pass_check_operation1("prn", " r1, r2");
+	test_first_pass_check_operation1("clr", " #1");
+	test_first_pass_check_operation1("clr", " xxx");
+	test_first_pass_check_operation1("clr", " r1");
+	test_first_pass_check_operation1("clr", " r1[r2]");
+	test_first_pass_check_operation1("clr", "");
+	test_first_pass_check_operation1("mov", " x, y");
+	test_first_pass_check_operation1("mov", " #1, #2");
+	test_first_pass_check_operation1("mov", " r1, r2");
+	test_first_pass_check_operation1("mov", " r1[r2], r3[r4]");
+	test_first_pass_check_operation1("mov", " r1, r2 r3");
+	test_first_pass_check_operation1("mov", " r1, r2, r3");
+	test_first_pass_check_operation1("mov", " r1");
+	test_first_pass_check_operation1("mov", " ");
 }
 
 void to_binary_string(int value, int num_bits, char buffer[])
@@ -256,7 +256,7 @@ void print_menu(char *program)
 	printf("4: test process_data_instruction\n");
 	printf("5: test process_string_instruction\n");
 	printf("6: test first_pass_ee_command\n");
-	printf("7: test first_pass_check_operands\n");
+	printf("7: test first_pass_check_operation\n");
 	printf("8: test encode_command\n");
 }
 
@@ -295,7 +295,7 @@ int main(int argc, char* argv[])
 			test_first_pass_ee_command();
 			break;
 		case 7:
-			test_first_pass_check_operands();
+			test_first_pass_check_operation();
 			break;
 		case 8:
 			test_encode_command();
