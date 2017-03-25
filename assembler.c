@@ -33,7 +33,7 @@ void run_on_file(char *file_name)
 		}
 		else if ((f = open_file(full_name, "r")))
 		{
-			succees = second_pass(f); /* calling to file pass with a flag for the second pass */
+			success = second_pass(f); /* calling to file pass with a flag for the second pass */
 			fclose(f);
 			if (success)
 			{
