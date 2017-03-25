@@ -229,8 +229,8 @@ int encode_command(int group, int opcode, ADR_METHOD src, ADR_METHOD dst)
 int encode_registers(int register1, int register2)
 {
 	int encoding = 0;
-	encoding = push_to_encoding(encoding, 6, register2);
 	encoding = push_to_encoding(encoding, 6, register1);
+	encoding = push_to_encoding(encoding, 6, register2);
 	encoding = push_to_encoding(encoding, 2, ABSOLUTE);
 	return encoding;
 }
