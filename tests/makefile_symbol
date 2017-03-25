@@ -1,0 +1,3 @@
+test_symbol: test_symbol_table.c ../symbol_table.c ../hash_table.c ../utils.c
+	gcc -o test_symbol test_symbol_table.c ../symbol_table.c ../hash_table.c ../utils.c -I.. -pedantic -Wall -Werror -ansi
+

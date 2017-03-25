@@ -11,6 +11,7 @@
 
 int second_pass(FILE *f)
 {
+	MAIN_DATA.IC = 0; /* restart the IC for the second pass */
 	return file_pass(f, 2);
 }
 

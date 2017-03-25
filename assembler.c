@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "write_data.h"
 
+/* the main program */
 
 void run_on_file(char *file_name)
 {
@@ -24,7 +25,7 @@ void run_on_file(char *file_name)
 	printf("Processing file: %s\n", full_name);
 	if ((f = open_file(full_name, "r")))
 	{
-		errors = first_pass(f);
+		errors = first_pass(f); /* calling to file pass with a flag for the first pass */
 		fclose(f);
 		if (errors > 0)
 		{
@@ -32,7 +33,7 @@ void run_on_file(char *file_name)
 		}
 		else if ((f = open_file(full_name, "r")))
 		{
-			success = second_pass(f);
+			succees = second_pass(f); /* calling to file pass with a flag for the second pass */
 			fclose(f);
 			if (success)
 			{

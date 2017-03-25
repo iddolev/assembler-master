@@ -1,0 +1,2 @@
+test_operands: test_operands.c ../main_data.c ../instructions.c ../operands.c ../opcodes.c ../symbol_table.c ../hash_table.c ../utils.c ../defs.c
+	gcc -o test_operands test_operands.c ../main_data.c ../instructions.c ../operands.c ../opcodes.c ../symbol_table.c ../hash_table.c ../utils.c ../defs.c -I.. -pedantic -Wall -Werror -ansi
