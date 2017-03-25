@@ -7,12 +7,22 @@
 
 void write_file_line(FILE *f, char *label, int address)
 {
-        fprintf(f, "%s\t%02X\n", label, address);
+/*        fprintf(f, "%s\t%02X\n", label, address);  */
+	/* for debug: */
+	char buf[20];
+	to_binary_string(address, 15, buf);
+        fprintf(f, "%s\t%02X\t%s\n", label, address, buf);
 }
 
 void write_file_int(FILE *f, int address, int value)
 {
-        fprintf(f, "%02X\t%04X\n", address, value);
+/*        fprintf(f, "%02X\t%04X\n", address, value);*/
+
+	/* for debug: */
+	char buf[20];
+	to_binary_string(value, 15, buf);
+        fprintf(f, "%02X\t%04X\t%s\n", address, value, buf);
+
         /* to do - need to improve this function to handle negative value,
 because we should use only 15 bits */
 }

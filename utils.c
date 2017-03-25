@@ -150,4 +150,42 @@ int push_to_encoding(int current, int num_bits, int to_add)
 	return result;
 }
 
+/* for debugging */
+void to_binary_string(int value, int num_bits, char buffer[])
+{
+	int i, bit_mask, bit_value;
+	for (i=num_bits-1; i>=0; --i)
+	{
+		bit_mask = 1 << i;
+		bit_value = value & bit_mask;
+		buffer[num_bits-1-i] = bit_value ? '1' : '0'; 
+	}
+	buffer[num_bits] = '\0';
+	/* printf("to_binary_string(%d, %d) = %s\n", value, num_bits, buffer); */
+}
+
+/* for debugging */
+void encoding_to_str(int encoding, int sizes[], int length, char output[])
+{
+	int accum[10];
+	int i, mask, size;
+	char buf[10];
+	int result_pos=0;
+
+	for (i=length-1; i>=0; --i)
+	{
+		size = sizes[i];
+		mask = (1 << size) - 1;
+		accum[i] = encoding & mask;
+		encoding >>= size;
+	}
+	for (i=0; i<length; ++i)
+	{
+		to_binary_string(accum[i], sizes[i], buf);
+		strncpy(output+result_pos, buf, sizes[i]);
+		result_pos += sizes[i];
+		output[result_pos++] = '-';
+	}
+	output[result_pos-1] = '\0';   /* replace the last '-' with '\0' */
+}
 
