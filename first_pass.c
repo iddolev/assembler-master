@@ -67,7 +67,7 @@ int process_data_instruction(char * linep, int lineNum)
 
 int process_string_instruction(char * linep, int lineNum)
 {
-	int asciiChar;
+	int ascii_code;
 	
 	while (is_whitespace(*linep))
 	{
@@ -80,13 +80,18 @@ int process_string_instruction(char * linep, int lineNum)
 
 		while(!is_end_char(*linep) && *linep != '"') /* scan it without the " " characters */
 		{
-			asciiChar = *linep;
-			if (!add_to_data_section(asciiChar))
+			ascii_code = *linep;
+			if (!add_to_data_section(ascii_code))
 			{
 				printf("At line %d exceeded maximal number of data elements \n", lineNum);
 				return 0;
 			}
 			linep++;
+		}
+		if (!add_to_data_section(0))   /* null terminating the string */
+		{
+			printf("At line %d exceeded maximal number of data elements \n", lineNum);
+			return 0;
 		}
 		if (*linep != '"')
 		{
@@ -178,8 +183,15 @@ int first_pass_check_operation(char * opcode_word, char * linep, int line_num)
 {
 	parsed_operand operands[MAX_NUM_OPERANDS];
 	ADR_METHOD srcAdr, dstAdr;
+	opcode_item* opcode_data;
 
-	opcode_item* opcode_data = opcode_lookup(opcode_word); /* check if legal method name */
+	if (*linep == ':')
+	{
+		printf("At line %d: Illegal label name: %s\n", line_num, opcode_word);
+		return 0;
+	}
+
+	opcode_data = opcode_lookup(opcode_word); /* check if legal method name */
 	if (!opcode_data)
 	{
 		printf("Line %d: invalid opcode '%s'\n", line_num, opcode_word);

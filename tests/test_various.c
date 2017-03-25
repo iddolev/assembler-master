@@ -241,6 +241,7 @@ void test_encode_command()
 	test_encode_command1("stop", ADR_METHOD_DONT_CARE, ADR_METHOD_DONT_CARE);
 	test_encode_command1("mov", DIRECT, INDEX);
 	test_encode_command1("add", REGISTER, DIRECT);
+	test_encode_command1("add", REGISTER, DIRECT);
 }
 
 void nl()

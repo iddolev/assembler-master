@@ -1,2 +1,2 @@
-mov r1 r3
+.data -9
 

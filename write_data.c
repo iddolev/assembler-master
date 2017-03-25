@@ -44,6 +44,8 @@ void write_object_file(char *file_prefix)
         if ((f = open_file(full_name, "w")))
         {
 		printf("Writing to %s\n", full_name);
+		/* first line: length of code section and of data section (saved from first pass) */
+	        fprintf(f, "%X %X\n", MAIN_DATA.DATA_OFFSET, MAIN_DATA.DC);
                 for (line_num=0; line_num<MAIN_DATA.IC; ++line_num)
                 {
                         write_file_int(f, CODE_SECTION_OFFSET+line_num, MAIN_DATA.CODE_SECTION[line_num]);

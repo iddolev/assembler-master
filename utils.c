@@ -150,6 +150,43 @@ int push_to_encoding(int current, int num_bits, int to_add)
 	return result;
 }
 
+int encode_in_binary_complement2(int value, int num_bits)
+{
+	int max, mask;
+
+	if (value >= 0)
+	{
+		/* Since we are using a complement-2 representation using num_bits bits, 
+		   and we reserve the most significant bit to mark a negative number,
+		   this means we can only use num_bits-1 bits to encode a positive number.
+		   So if value is larger than what can be encoded in num_bits-1 bits, this is an error */
+		max = 1 << (num_bits-1);
+		if (value >= max)
+		{
+			printf("Cannot encode the value %d into only %d bits (complement-2)\n", value, num_bits);
+			return -1;   /* this is -1 (i.e. all 1 in binary) of *int*, which we assume has many more bits than num_bits  */
+		}
+	}
+	else  /* value < 0 */
+	{
+		/* If value is a negative number, its form is 111...some_digits
+                   As with positive numbers above, there is a limit to the possible numbers we can accept: */
+		max = 1 << (num_bits-1);
+		if (-value > max)  /* The largest possible negative number in binary is represented as 100...000.
+					Its absolute value, (-value) is == max.
+					So if -value > max we have an error */
+		{
+			printf("Cannot encode the value %d into only %d bits (complement-2)\n", value, num_bits);
+			return -1;
+		}
+
+		mask = (1 << num_bits) - 1;    /*  mask = 0000...01111111111  (num_bits times 1 bit, the rest is zero) */
+		value = value & mask;   /* the complement-2 representation over num_bits bits 
+					   uses the num_bits least significant bits of value, whether positive or negative */
+	}
+	return value;
+}
+
 /* for debugging */
 void to_binary_string(int value, int num_bits, char buffer[])
 {

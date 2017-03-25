@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "main_data.h"
+#include "utils.h"
 
 
 main_data MAIN_DATA;
@@ -32,12 +33,19 @@ void reset_main_data()
 
 int add_to_data_section(int value)
 {
+	int encoded_value;
+
 	if (MAIN_DATA.DC >= DATA_SECTION_SIZE)
 	{
 		printf("Error: Too many data items\n");
 		return 0;
 	}
-	MAIN_DATA.DATA_SECTION[MAIN_DATA.DC++] = value;
+
+	encoded_value = encode_in_binary_complement2(value, DATA_VALUE_NUMBER_OF_BITS);
+	if (encoded_value == -1)
+		return 0;   /* error flag */
+
+	MAIN_DATA.DATA_SECTION[MAIN_DATA.DC++] = encoded_value;
 	return 1;
 }
 

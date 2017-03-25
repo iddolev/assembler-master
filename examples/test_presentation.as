@@ -1,7 +1,7 @@
-; example from class
+; example from presentation
 .entry LOOP
 main: inc K
-      mov r5[r4],W
+      mov r5[r2],W
 .extern W
       add r2, STR
 LOOP: jmp W
