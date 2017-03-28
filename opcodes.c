@@ -31,7 +31,7 @@ int opcode_add(char *name,
 	opcode_item *data;
 	if (opcode_lookup(name))
 	{
-		printf("Error: symbol '%s' is already in opcode table\n", name);
+		fprintf(stderr, "Error: symbol '%s' is already in opcode table\n", name);
 		return 0;
 	}
 	data = (opcode_item*) malloc(sizeof(opcode_item));

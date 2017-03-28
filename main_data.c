@@ -37,7 +37,7 @@ int add_to_data_section(int value)
 
 	if (MAIN_DATA.DC >= DATA_SECTION_SIZE)
 	{
-		printf("Error: Too many data items\n");
+		fprintf(stderr, "Error: Too many data items\n");
 		return 0;
 	}
 
@@ -53,7 +53,7 @@ int add_to_code_section(int value)
 {
 	if (MAIN_DATA.IC >= CODE_SECTION_SIZE)
 	{
-		printf("Error: Too many code lines\n");
+		fprintf(stderr, "Error: Too many code lines\n");
 		return 0;
 	}
 	MAIN_DATA.CODE_SECTION[MAIN_DATA.IC++] = value;
@@ -69,14 +69,14 @@ int add_to_ee_section(char *section_name, e_file_line* array[], int pos, int max
 
 	if (pos >= max_pos)
 	{
-		printf("Error: Too many %s lines\n", section_name);
+		fprintf(stderr, "Error: Too many %s lines\n", section_name);
 		return 0;
 	}
 
 	line_struct = (e_file_line*) malloc(sizeof(line_struct));
 	if (!line_struct)
 	{
-		printf("Memory allocation problem in %s table\n", section_name);
+		fprintf(stderr, "Memory allocation problem in %s table\n", section_name);
 		return 0;
 	}
 	

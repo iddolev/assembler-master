@@ -29,7 +29,7 @@ void run_on_file(char *file_name)
 		fclose(f);
 		if (errors > 0)
 		{
-			printf("Encountered errors in first pass, so not doing second pass: %s\n", full_name);
+			fprintf(stderr, "Encountered errors in first pass, so not doing second pass: %s\n", full_name);
 		}
 		else if ((f = open_file(full_name, "r")))
 		{
@@ -42,7 +42,7 @@ void run_on_file(char *file_name)
 			}
 			else
 			{
-				printf("Error during second pass, so not writing output files: %s\n", full_name); 
+				fprintf(stderr, "Error during second pass, so not writing output files: %s\n", full_name); 
 			}
 		}
 	}
@@ -64,13 +64,13 @@ int main(int argc, char *argv[])
 {
 	if (argc == 1)
 	{
-		printf("No file names supplied\n");
+		fprintf(stderr, "No file names supplied\n");
 		return 1;
 	}
 	
 	if (!opcode_table_init())
 	{
-		printf("Opcode table initialization failed\n");
+		fprintf(stderr, "Opcode table initialization failed\n");
 		return 1;
 	}
 	run_on_files(argv+1, argc-1);

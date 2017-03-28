@@ -33,7 +33,7 @@ int symbol_table_add_and_verify(char *name, int address, char is_code, char is_e
 	int ret = symbol_table_add(name, address, is_code, is_extern);
 	if (ret == 0)
 	{
-		printf("Symbol %s in line %d already appeared previously\n", name, line_num);
+		fprintf(stderr, "Symbol %s in line %d already appeared previously\n", name, line_num);
 		return 0; 
 	}
 	if (ret == -1)
@@ -55,7 +55,7 @@ int symbol_table_add(char *name, int address, char is_code, char is_extern)
 	data = (symbol_table_data*) malloc(sizeof(symbol_table_data));
 	if (!data)
 	{
-		printf ("Memory problem in symbol table\n");
+		fprintf (stderr, "Memory problem in symbol table\n");
 		return -1;
 	}
         data->address = address;
@@ -64,7 +64,7 @@ int symbol_table_add(char *name, int address, char is_code, char is_extern)
 	data->was_used = 0;
 	if (!hash_table_add(&symbol_table, name, data))
 	{
-		printf ("Memory problem in symbol table\n");
+		fprintf (stderr, "Memory problem in symbol table\n");
 		free(data);
 		return -1;
 	}
@@ -93,4 +93,28 @@ void print_symbol_table()
 	}
 }
 
+int verify_extern_used()
+{
+	int i, ret = 1;
+	symbol_table_data* data;
+
+	for (i=0; i<HASH_TABLE_SIZE; ++i)
+	{
+		hash_table_item *np = symbol_table._data[i];
+		if (np)
+		{
+			while (np)
+			{
+				data = (symbol_table_data *) np->data;
+				if (data->is_extern && !data->was_used)
+				{
+					fprintf(stderr, "The extern symbol '%s' is not used\n", np->name);
+					ret = 0;
+				}
+				np = np->next;
+			}
+		}
+	}
+	return ret;
+}
 

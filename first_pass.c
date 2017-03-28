@@ -17,7 +17,7 @@ int first_pass(FILE *f)
 }
 
 
-int process_data_instruction(char * linep, int lineNum)
+int process_data_instruction(char * linep, int line_num)
 {
 	char nextWord[MAX_SYMBOL_SIZE];
 	
@@ -26,20 +26,20 @@ int process_data_instruction(char * linep, int lineNum)
 			linep = getNextToken(linep, nextWord);
 			if (!linep)
 			{
-				printf("Missing oprands for '.data' at line %d \n", lineNum);
+				fprintf(stderr, "Missing oprands for '.data' at line %d \n", line_num);
 				return 0;
 			}
 			if (is_number(nextWord))
 			{
 				if (!add_to_data_section(atoi(nextWord)))
 				{
-					printf("At line %d exceeded maximal number of data elements \n", lineNum);
+					fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
 					return 0;
 				}
 			}
 			else
 			{
-				printf("At line %d illegal operand \"%s\" for '.data' \n", lineNum, nextWord);
+				fprintf(stderr, "At line %d illegal operand \"%s\" for '.data' \n", line_num, nextWord);
 				return 0;
 			}
 			/* now check legal nextWord, and update MAIN_DATA.DC */
@@ -54,7 +54,7 @@ int process_data_instruction(char * linep, int lineNum)
 			}
 			if (*linep != ',')
 			{
-				printf("Missing comma at line %d \n", lineNum);
+				fprintf(stderr, "Missing comma at line %d \n", line_num);
 				return 0;   /* continue to next line: no point in continuing to make sense of the corrupt data section*/
 			}
 			else
@@ -65,7 +65,7 @@ int process_data_instruction(char * linep, int lineNum)
 	return 0;	
 }
 
-int process_string_instruction(char * linep, int lineNum)
+int process_string_instruction(char * linep, int line_num)
 {
 	int ascii_code;
 	
@@ -83,26 +83,26 @@ int process_string_instruction(char * linep, int lineNum)
 			ascii_code = *linep;
 			if (!add_to_data_section(ascii_code))
 			{
-				printf("At line %d exceeded maximal number of data elements \n", lineNum);
+				fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
 				return 0;
 			}
 			linep++;
 		}
 		if (!add_to_data_section(0))   /* null terminating the string */
 		{
-			printf("At line %d exceeded maximal number of data elements \n", lineNum);
+			fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
 			return 0;
 		}
 		if (*linep != '"')
 		{
-			printf("Missing end quote character at .string line %d\n", lineNum);
+			fprintf(stderr, "Missing end quote character at .string line %d\n", line_num);
 			return 0;
 		}
 		linep++;    /* skip " character */
 	}
 	else
 	{
-		printf("Missing begin quote character at .string line %d\n", lineNum);
+		fprintf(stderr, "Missing begin quote character at .string line %d\n", line_num);
 		return 0;
 	}
 	
@@ -118,7 +118,7 @@ int process_string_instruction(char * linep, int lineNum)
 	}
 	else
 	{
-		printf("Illegal characters after end quote at .string line %d\n", lineNum);
+		fprintf(stderr, "Illegal characters after end quote at .string line %d\n", line_num);
 		return 0;
 	}
 	return 0;
@@ -130,13 +130,13 @@ int first_pass_data_command(INSTRUCTION_TYPE type, char *linep, int line_num)
 	
 	if (type == DATA)
 	{
-		result = process_data_instruction(linep, line_num); /*to do: should return a value for error_count*/
+		result = process_data_instruction(linep, line_num); 
 		if (result == 0)
 			return 0;
 	}
 	else  /* type == STRING  */
 	{
-		result = process_string_instruction(linep, line_num); /*to do: should return a value for errorCoun*/
+		result = process_string_instruction(linep, line_num); 
 		if (result == 0)
 			return 0;
 	}
@@ -151,21 +151,21 @@ int first_pass_ee_command(INSTRUCTION_TYPE type, char *linep, int line_num)
 	linep = getNextToken(linep, next_word);
 	if (!linep)
 	{
-		printf("Missing operand in line %d\n", line_num);
+		fprintf(stderr, "Missing operand in line %d\n", line_num);
 		return 0;
 	}
 
 	lab = is_label(next_word, line_num);
 	if (lab != SYMBOL)
 	{
-		printf("Illegal operand in line %d\n", line_num);
+		fprintf(stderr, "Illegal operand in line %d\n", line_num);
 		return 0;
 	}
 
 	/* now need to check if there isn't anything in the line afterward i.e '.extern LOOP asdfthgj' - it's not legal*/
 	if (!verifyEndOfLine(linep))
 	{
-		printf("Illegal extra at line %d: %s\n", line_num, linep);
+		fprintf(stderr, "Illegal extra at line %d: %s\n", line_num, linep);
 		return 0;
 	}
 
@@ -187,21 +187,21 @@ int first_pass_check_operation(char * opcode_word, char * linep, int line_num)
 
 	if (*linep == ':')
 	{
-		printf("At line %d: Illegal label name: %s\n", line_num, opcode_word);
+		fprintf(stderr, "At line %d: Illegal label name: %s\n", line_num, opcode_word);
 		return 0;
 	}
 
 	opcode_data = opcode_lookup(opcode_word); /* check if legal method name */
 	if (!opcode_data)
 	{
-		printf("Line %d: invalid opcode '%s'\n", line_num, opcode_word);
+		fprintf(stderr, "Line %d: invalid opcode '%s'\n", line_num, opcode_word);
 		return 0;
 	}
 	if (opcode_data->group == 0) /* if the method shouldn't get any operands */
 	{
 		if (!verifyEndOfLine(linep)) /* there should be nothing after the method name */
 		{
-			printf("Line %d: No operands should appear after opcode '%s'\n", line_num, opcode_word);
+			fprintf(stderr, "Line %d: No operands should appear after opcode '%s'\n", line_num, opcode_word);
 			return 0;
 		}
 		MAIN_DATA.IC += 1;
@@ -219,7 +219,7 @@ int first_pass_check_operation(char * opcode_word, char * linep, int line_num)
 			MAIN_DATA.IC += 2;
 			return 1;
                 }
-		printf("Incompatible addressing method for operand at line %d\n", line_num);
+		fprintf(stderr, "Incompatible addressing method for operand at line %d\n", line_num);
 		return 0;
 	}
 	else if (opcode_data->group == 2)
@@ -240,7 +240,7 @@ int first_pass_check_operation(char * opcode_word, char * linep, int line_num)
 			MAIN_DATA.IC += 3;
 			return 1;
                 }
-		printf("Incompatible addressing method for operand at line %d\n", line_num);
+		fprintf(stderr, "Incompatible addressing method for operand at line %d\n", line_num);
 		return 0;
 	}
 

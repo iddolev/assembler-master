@@ -14,7 +14,7 @@
 #include "instructions.h"
 
 
-OP_TYPE is_label(char *s, int lineNum)
+OP_TYPE is_label(char *s, int line_num)
 {
 	int i=0;
 
@@ -25,7 +25,6 @@ OP_TYPE is_label(char *s, int lineNum)
 
 	if (!isalpha(s[i])) /*if the first char in the symbol is not alpha then it is not a legal symbol*/
 	{
-		/*printf("at line %d symbol name must start with a letter", lineNum);*/
 		return NOT; /* can be something else, doesn't have to be an error*/
 	}
 	i++;
@@ -37,7 +36,7 @@ OP_TYPE is_label(char *s, int lineNum)
 
 	if (i == MAX_SYMBOL_SIZE)
 	{
-		printf("At line %d symbol name is too long \n", lineNum);
+		fprintf(stderr, "At line %d symbol name is too long \n", line_num);
 		return ERROR;
 	} 
 
@@ -50,7 +49,7 @@ OP_TYPE is_label(char *s, int lineNum)
 		return SYMBOL; /*then it is legal*/
 	}
 
-	printf("At line %d illegal symbol name \n", lineNum);
+	fprintf(stderr, "At line %d illegal symbol name \n", line_num);
 	return ERROR;
 }
 

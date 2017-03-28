@@ -72,14 +72,14 @@ ADR_METHOD check_immediate(char * s, int line_num)
 		}
 		if (num_digits == 0)
 		{
-			printf("Missing digits after '#' at line %d\n", line_num);
+			fprintf(stderr, "Missing digits after '#' at line %d\n", line_num);
 			return ILLEGAL_OPERAND;
 		}
 		if (s[i] == '\0')
 		{
 			return IMMEDIATE;
 		}
-		printf("Illegal operand after '#' at line %d\n", line_num);
+		fprintf(stderr, "Illegal operand after '#' at line %d\n", line_num);
 		return ILLEGAL_OPERAND;
 	}
 	return OTHER;
@@ -112,7 +112,7 @@ ADR_METHOD check_index_method(char *s, int line_num)
 		buff[2] = '\0';
 		if (!is_register(buff))
 		{
-			printf("Illegal register name \'%s\' at line %d\n", buff, line_num);
+			fprintf(stderr, "Illegal register name \'%s\' at line %d\n", buff, line_num);
 			return ILLEGAL_OPERAND;
 		}
 		buff[0] = s[3];
@@ -120,7 +120,7 @@ ADR_METHOD check_index_method(char *s, int line_num)
 		buff[2] = '\0';
 		if (!is_register(buff))
 		{
-			printf("Illegal register name \'%s\' at line %d\n", buff, line_num);
+			fprintf(stderr, "Illegal register name \'%s\' at line %d\n", buff, line_num);
 			return ILLEGAL_OPERAND;
 		}
 
@@ -131,7 +131,7 @@ ADR_METHOD check_index_method(char *s, int line_num)
 			    return INDEX;
 			}
 		}
-		printf("For index addressing method - left register must be odd and right register must be even - at line %d\n", line_num); 
+		fprintf(stderr, "For index addressing method - left register must be odd and right register must be even - at line %d\n", line_num); 
 		return ILLEGAL_OPERAND;
 	}
 	return OTHER;
@@ -177,7 +177,7 @@ int collect_operands(parsed_operand operands[], int expected_num_operands, char 
 		linep = getNextToken(linep, nextWord);
 		if (!linep)
 		{
-			printf("Missing operand at line %d\n", line_num);
+			fprintf(stderr, "Missing operand at line %d\n", line_num);
 			return 0;
 		}
 		strcpy(operands[position].text, nextWord);
@@ -199,19 +199,19 @@ int collect_operands(parsed_operand operands[], int expected_num_operands, char 
 		}
 		if (position == expected_num_operands)
 		{
-			printf("At line %d illegal content after last expected operand\n", line_num);
+			fprintf(stderr, "At line %d illegal content after last expected operand\n", line_num);
 			return 0;
 		}
 		if (*linep != ',')
 		{
-			printf("Missing comma between operands at line %d \n", line_num);
+			fprintf(stderr, "Missing comma between operands at line %d \n", line_num);
 			return 0;
 		}
 		linep++;
 	}
 	if (position != expected_num_operands)
 	{
-	        printf("Unsuitable number of operands at line %d \n", line_num);
+	        fprintf(stderr, "Unsuitable number of operands at line %d \n", line_num);
 		return 0;
 	}
 	return 1;

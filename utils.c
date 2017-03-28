@@ -22,7 +22,7 @@ FILE* open_file(char *filename, char *mode)
 	FILE *f = fopen(filename, mode);
 	if (!f)
 	{
-		printf("ERROR: Could not open file: %s\n", filename);
+		fprintf(stderr, "ERROR: Could not open file: %s\n", filename);
 	}
 	return f;
 }
@@ -142,7 +142,7 @@ int push_to_encoding(int current, int num_bits, int to_add)
 	max = 1 << num_bits;
 	if (to_add >= max)
 	{
-		printf("ERROR: push_to_encoding: Argument %d is to add is too large in %d bits\n", to_add, num_bits);
+		fprintf(stderr, "ERROR: push_to_encoding: Argument %d is to add is too large in %d bits\n", to_add, num_bits);
 		mask = max-1;
 		to_add = to_add & mask;    /* keep only the lower num_bits bits of to_add */ 
 	}
@@ -163,7 +163,7 @@ int encode_in_binary_complement2(int value, int num_bits)
 		max = 1 << (num_bits-1);
 		if (value >= max)
 		{
-			printf("Cannot encode the value %d into only %d bits (complement-2)\n", value, num_bits);
+			fprintf(stderr, "Cannot encode the value %d into only %d bits (complement-2)\n", value, num_bits);
 			return -1;   /* this is -1 (i.e. all 1 in binary) of *int*, which we assume has many more bits than num_bits  */
 		}
 	}
@@ -176,7 +176,7 @@ int encode_in_binary_complement2(int value, int num_bits)
 					Its absolute value, (-value) is == max.
 					So if -value > max we have an error */
 		{
-			printf("Cannot encode the value %d into only %d bits (complement-2)\n", value, num_bits);
+			fprintf(stderr, "Cannot encode the value %d into only %d bits (complement-2)\n", value, num_bits);
 			return -1;
 		}
 

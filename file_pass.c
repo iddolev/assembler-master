@@ -32,7 +32,7 @@ int file_pass(FILE *file, int pass_number)
 		len = strlen(line);
 		if (len > MAX_LINE_LENGTH)
 		{
-			printf("Line number %d is too long \n", line_num);
+			fprintf(stderr, "Line number %d is too long \n", line_num);
 			error_count++;
 			continue;
 		}
@@ -48,7 +48,7 @@ int file_pass(FILE *file, int pass_number)
 
 		linep = getNextToken(linep, next_word);
 		
-		if (!linep)
+		if (!linep || next_word[0] ==';' || is_end_char(*linep))
 			continue;
 		
 		op_type = is_label(next_word, line_num);
@@ -64,14 +64,14 @@ int file_pass(FILE *file, int pass_number)
 				linep = getNextToken(linep, next_word);
 				if (!linep)
 				{
-					printf("Illegal or no content after label in line %d\n", line_num);
+					fprintf(stderr, "Illegal or no content after label in line %d\n", line_num);
 					error_count++;
 					continue;
 				}
 			}
 			else
 			{
-				printf("Missing ':' after label in line %d\n", line_num);
+				fprintf(stderr, "Missing ':' after label in line %d\n", line_num);
 				error_count++;
 				continue;
 			}
@@ -107,7 +107,7 @@ int file_pass(FILE *file, int pass_number)
 			{
 				if (pass_number == 1)
 				{
-					printf("Warning: Ignoring label before extern/entry instruction at line %d\n", line_num);
+					fprintf(stderr, "Warning: Ignoring label before extern/entry instruction at line %d\n", line_num);
 					/* not considering this as error */
 				}
 			}

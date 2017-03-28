@@ -11,9 +11,13 @@
 
 int second_pass(FILE *f)
 {
+	int ret; 
 	MAIN_DATA.DATA_OFFSET = MAIN_DATA.IC;   /* data offset = IC of end of first pass */
 	MAIN_DATA.IC = 0; /* restart the IC for the second pass */
-	return file_pass(f, 2);
+	ret = file_pass(f, 2);
+	if (ret)
+		ret = verify_extern_used();
+	return ret;
 }
 
 /* Address is from first pass (starting from 0). Return the offset address for the final code section */
@@ -99,6 +103,7 @@ int process_argument(parsed_operand *operand, int is_destination, int line_num)
 				/* In addition, we need to add the address IC to the extern file with this extern symbol */
 				address = code_address(MAIN_DATA.IC);
 				add_to_extern_section(address, operand->text);
+				symbol_data->was_used = 1;
 			}
 			else if (symbol_data->is_code)
 			{

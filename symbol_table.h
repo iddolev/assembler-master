@@ -23,5 +23,6 @@ void symbol_table_clear();
 /* for debugging */
 void print_symbol_table();
 
-
+/* checks if all extern symbols in the table are marked as used */
+int verify_extern_used();
 

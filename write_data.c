@@ -22,9 +22,6 @@ void write_file_int(FILE *f, int address, int value)
 	char buf[20];
 	to_binary_string(value, 15, buf);
         fprintf(f, "%02X\t%04X\t%s\n", address, value, buf);
-
-        /* to do - need to improve this function to handle negative value,
-because we should use only 15 bits */
 }
 
 void write_object_file(char *file_prefix)
