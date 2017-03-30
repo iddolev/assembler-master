@@ -11,12 +11,13 @@
 
 /* functions for the first pass */
 
+/* this is for entering the file pass function with the first pass flag */
 int first_pass(FILE *f)
 {
 	return file_pass(f, 1);
 }
 
-
+/* a function to check if the .data command operands are valid */
 int process_data_instruction(char * linep, int line_num)
 {
 	char nextWord[MAX_SYMBOL_SIZE];
@@ -31,6 +32,7 @@ int process_data_instruction(char * linep, int line_num)
 			}
 			if (is_number(nextWord))
 			{
+				/* if there are to many numbers for the .data command and there is no more space in the data section, return error */
 				if (!add_to_data_section(atoi(nextWord)))
 				{
 					fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
@@ -65,6 +67,7 @@ int process_data_instruction(char * linep, int line_num)
 	return 0;	
 }
 
+/* a function to check if the .string command operands are valid */
 int process_string_instruction(char * linep, int line_num)
 {
 	int ascii_code;
@@ -74,7 +77,7 @@ int process_string_instruction(char * linep, int line_num)
 		linep++; /*skip blank lines and stuff*/
 	}
 
-	if (*linep == '"')
+	if (*linep == '"') /* the string shouls start with a - " */
 	{
 		linep++;    /* skip " character */
 
@@ -93,7 +96,7 @@ int process_string_instruction(char * linep, int line_num)
 			fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
 			return 0;
 		}
-		if (*linep != '"')
+		if (*linep != '"') /* the string should end with a - " */
 		{
 			fprintf(stderr, "Missing end quote character at .string line %d\n", line_num);
 			return 0;

@@ -12,7 +12,8 @@
 #include "symbol_table.h"
 #include "instructions.h"
 
-
+/* the generic pass function that contains all the mutual parts of the first and second pass */
+/* all the other parts are executed according to the pass flag (pass_number) */
 /* pass_number should be 1 or 2 for first and second pass */
 int file_pass(FILE *file, int pass_number)
 {
@@ -20,7 +21,7 @@ int file_pass(FILE *file, int pass_number)
 	char * linep;
 	char next_word[MAX_SYMBOL_SIZE+1]; /* +1 for terminating '\0' */
 	char label[MAX_SYMBOL_SIZE+1];
-	int error_count = 0, len;
+	int error_count = 0, len; /* error_count is for indicating errors */
 	OP_TYPE op_type;
 	INSTRUCTION_TYPE instruction_type;
 	char line[MAX_LINE_LENGTH+2]; /*+2 for the '\n' and '\0' char*/
@@ -52,11 +53,10 @@ int file_pass(FILE *file, int pass_number)
 			continue;
 		
 		op_type = is_label(next_word, line_num);
-		if (op_type == SYMBOL) /*maybe need to check if isSymbol == error*/
+		if (op_type == SYMBOL)
 		{
 			if (*linep == ':')
 			{
-				/* to do: maybe allow whitespace between next_word and ':' */
 				strcpy(label, next_word); /* we save the symbol name for further use */
 				symbol_flag = 1;
 				/*collect next operator*/

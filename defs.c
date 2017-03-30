@@ -1,6 +1,7 @@
 #include <string.h>
 #include "defs.h"
 
+/* help for debug printing */
 char * op_type_to_string(OP_TYPE op_type)
 {
 	switch(op_type)

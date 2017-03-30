@@ -13,7 +13,9 @@
 #include "externs.h"
 #include "instructions.h"
 
-
+/* a function to check if the given string is a label */
+/* it can return SYMBOL == it is a label, or NOT == it is not a label but can be something else
+ or ERROR == it is not a symbol and can not be anything else, it is a certain error */
 OP_TYPE is_label(char *s, int line_num)
 {
 	int i=0;

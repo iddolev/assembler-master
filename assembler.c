@@ -10,14 +10,15 @@
 
 /* the main program */
 
+/* a function to run the assembler on a specific file */
 void run_on_file(char *file_name)
 {
 	FILE *f;
-	int errors;
+	int errors; /* a veriable to indicate errors */
 	char full_name[MAX_FILE_NAME_SIZE];
 	int success;
 	
-	symbol_table_init();
+	symbol_table_init(); /* in each file we compile we initialize the symbol table and data */
 	init_main_data();
 	
 	sprintf(full_name, "%s.as", file_name);
@@ -51,6 +52,7 @@ void run_on_file(char *file_name)
 	symbol_table_clear();  
 }
 
+/* the function to run the assembler on all the files given, each file at his turn */
 void run_on_files(char *file_names[], int num_files)
 {
 	int i;
@@ -60,6 +62,7 @@ void run_on_files(char *file_names[], int num_files)
 	}
 }
 
+/* gets the files from the command line and run the assembler on the files */ 
 int main(int argc, char *argv[])
 {
 	if (argc == 1)
