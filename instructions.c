@@ -55,6 +55,117 @@ OP_TYPE is_label(char *s, int line_num)
 	return ERROR;
 }
 
+/* a function to check if the .data command operands are valid */
+int process_data_instruction(char * linep, int line_num)
+{
+	char nextWord[MAX_SYMBOL_SIZE];
+	
+	while (*linep != '\n')
+		{
+			linep = getNextToken(linep, nextWord);
+			if (!linep)
+			{
+				fprintf(stderr, "Missing oprands for '.data' at line %d \n", line_num);
+				return 0;
+			}
+			if (is_number(nextWord))
+			{
+				/* if there are to many numbers for the .data command and there is no more space in the data section, return error */
+				if (!add_to_data_section(atoi(nextWord)))
+				{
+					fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
+					return 0;
+				}
+			}
+			else
+			{
+				fprintf(stderr, "At line %d illegal operand \"%s\" for '.data' \n", line_num, nextWord);
+				return 0;
+			}
+			/* now check legal nextWord, and update MAIN_DATA.DC */
+			while (is_whitespace(*linep))
+			{
+				linep++; /*skip blank lines and stuff*/
+			}
+			if (is_end_char(*linep))
+			{
+				/* we successfully finished scanning the data section so move to next line */
+				return 1; 
+			}
+			if (*linep != ',')
+			{
+				fprintf(stderr, "Missing comma at line %d \n", line_num);
+				return 0;   /* continue to next line: no point in continuing to make sense of the corrupt data section*/
+			}
+			else
+			{
+				linep++;
+			}
+		}
+	return 0;	
+}
+
+/* a function to check if the .string command operands are valid */
+int process_string_instruction(char * linep, int line_num)
+{
+	int ascii_code;
+	
+	while (is_whitespace(*linep))
+	{
+		linep++; /*skip blank lines and stuff*/
+	}
+
+	if (*linep == '"') /* the string shouls start with a - " */
+	{
+		linep++;    /* skip " character */
+
+		while(!is_end_char(*linep) && *linep != '"') /* scan it without the " " characters */
+		{
+			ascii_code = *linep;
+			if (!add_to_data_section(ascii_code))
+			{
+				fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
+				return 0;
+			}
+			linep++;
+		}
+		if (!add_to_data_section(0))   /* null terminating the string */
+		{
+			fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
+			return 0;
+		}
+		if (*linep != '"') /* the string should end with a - " */
+		{
+			fprintf(stderr, "Missing end quote character at .string line %d\n", line_num);
+			return 0;
+		}
+		linep++;    /* skip " character */
+	}
+	else
+	{
+		fprintf(stderr, "Missing begin quote character at .string line %d\n", line_num);
+		return 0;
+	}
+	
+	while (is_whitespace(*linep))
+	{
+		linep++; /*skip blank lines and stuff*/
+	}
+	
+	if (*linep == '\n' || *linep == '\0')
+	{
+		/* we successfully finished scanning the data section so move to next line */
+		return 1; 
+	}
+	else
+	{
+		fprintf(stderr, "Illegal characters after end quote at .string line %d\n", line_num);
+		return 0;
+	}
+	return 0;
+}
+
+/* a function to identify which instruction is the given string */
 INSTRUCTION_TYPE is_instruction(char * word)
 {
 	if (strcmp(word, ".data") == 0)
