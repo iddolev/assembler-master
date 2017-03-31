@@ -5,6 +5,7 @@
 #include "externs.h"
 #include "utils.h"
 
+/* write a label and address to file (for .ent and .ext files) */
 void write_file_line(FILE *f, char *label, int address)
 {
 /*        fprintf(f, "%s\t%02X\n", label, address);  */
@@ -14,6 +15,7 @@ void write_file_line(FILE *f, char *label, int address)
         fprintf(f, "%s\t%02X\t%s\n", label, address, buf);
 }
 
+/* write a an address and value to file (for .ob file) */
 void write_file_int(FILE *f, int address, int value)
 {
 /*        fprintf(f, "%02X\t%04X\n", address, value);*/
@@ -24,6 +26,7 @@ void write_file_int(FILE *f, int address, int value)
         fprintf(f, "%02X\t%04X\t%s\n", address, value, buf);
 }
 
+/* write accumulated info to .ob file */
 void write_object_file(char *file_prefix)
 {
         FILE *f;
@@ -55,6 +58,7 @@ void write_object_file(char *file_prefix)
         }
 }
 
+/* write accumulated info to .ext and .ent files */
 void write_e_file(char *file_prefix, char *file_extension, e_file_line* array[], int array_size)
 {
         FILE *f;
@@ -82,16 +86,19 @@ void write_e_file(char *file_prefix, char *file_extension, e_file_line* array[],
         fclose(f);
 }
 
+/* write .ent file */
 void write_entry_file(char *file_prefix)
 {
         write_e_file(file_prefix, "ent", MAIN_DATA.ENTRY_SECTION, MAIN_DATA.YC);
 }
 
+/* write .ext file */
 void write_extern_file(char *file_prefix)
 {
         write_e_file(file_prefix, "ext", MAIN_DATA.EXTERN_SECTION, MAIN_DATA.XC);
 }
 
+/* write the output files */
 void write_data_to_files(char *file_prefix)
 {
         write_object_file(file_prefix);
@@ -99,6 +106,7 @@ void write_data_to_files(char *file_prefix)
         write_extern_file(file_prefix);
 }
 
+/* delete old output files (if exist) */
 void clear_output_files(char *file_prefix)
 {
 	char* suffixes[] = {"ob", "ent", "ext"};
