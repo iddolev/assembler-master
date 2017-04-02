@@ -54,7 +54,8 @@ int file_pass(FILE *file, int pass_number)
 
 		if (!linep)
 		{
-			fprintf(stderr, "Unexpected error at line %d \n", line_num);
+			fprintf(stderr, "Bad command at line %d \n", line_num);
+			error_count++;
 			continue;
 		}
 

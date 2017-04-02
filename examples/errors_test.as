@@ -1,6 +1,7 @@
 N:.extern B
 LOOP:
 LABEL rts
+:
 B: stop
 &
 clr r5[r8]
