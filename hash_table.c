@@ -12,6 +12,7 @@ unsigned int hash_code(char *s) {
 	return hashval % HASH_TABLE_SIZE;
 }
 
+/* a function to initialize the hash table */
 void init_hash_table(hash_table *table)
 {
 	int i;
@@ -21,6 +22,7 @@ void init_hash_table(hash_table *table)
 	}
 }
 
+/* a function to clear the hash table */
 void clear_hash_table(hash_table *table)
 {
 	int i;
@@ -51,6 +53,7 @@ hash_table_item *hash_table_lookup(hash_table *table, char *s) {
 	return NULL; /* not found */
 }
 
+/* a function to add an item to the hash table */
 hash_table_item *hash_table_add(hash_table *table, char *name, void *data) 
 {
 	hash_table_item *np;
@@ -66,9 +69,8 @@ hash_table_item *hash_table_add(hash_table *table, char *name, void *data)
 		hashval = hash_code(name);
 		np->next = table->_data[hashval];
 		table->_data[hashval] = np;
-	} else {  /* already there */
-		free(np->data);   /* This is a possibility, depending on what you want */
-		np->data = data;  /* update data */
+	} else {  /* already there - this is illegal */
+		return NULL;
 	}
 	return np;
 }

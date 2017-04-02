@@ -71,6 +71,7 @@ int process_data_instruction(char * linep, int line_num)
 			if (is_number(nextWord))
 			{
 				/* if there are to many numbers for the .data command and there is no more space in the data section, return error */
+				/* else add to data section and update MAIN_DATA.DC */
 				if (!add_to_data_section(atoi(nextWord)))
 				{
 					fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
@@ -82,7 +83,7 @@ int process_data_instruction(char * linep, int line_num)
 				fprintf(stderr, "At line %d illegal operand \"%s\" for '.data' \n", line_num, nextWord);
 				return 0;
 			}
-			/* now check legal nextWord, and update MAIN_DATA.DC */
+
 			while (is_whitespace(*linep))
 			{
 				linep++; /*skip blank lines and stuff*/

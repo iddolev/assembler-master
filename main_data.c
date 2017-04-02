@@ -7,6 +7,7 @@
 
 main_data MAIN_DATA;
 
+/* a function to initialize the data */
 void init_main_data()
 {
 	MAIN_DATA.IC = 0;
@@ -31,6 +32,7 @@ void reset_main_data()
 	init_main_data();
 }
 
+/* a function to add data to the data section and update the DC */
 int add_to_data_section(int value)
 {
 	int encoded_value;
@@ -49,6 +51,7 @@ int add_to_data_section(int value)
 	return 1;
 }
 
+/* a function to add code to the code section and update the IC */
 int add_to_code_section(int value)
 {
 	if (MAIN_DATA.IC >= CODE_SECTION_SIZE)
@@ -60,9 +63,7 @@ int add_to_code_section(int value)
 	return 1;
 }
 
-/* returns -1 if too many lines
-           -2 if memory problem
-           1 if ok  */ 
+/* a function to add the entry/extern lables to their section (so we can output them to the suitable files) */
 int add_to_ee_section(char *section_name, e_file_line* array[], int pos, int max_pos, int address, char *label)
 {
 	e_file_line *line_struct;
@@ -86,6 +87,7 @@ int add_to_ee_section(char *section_name, e_file_line* array[], int pos, int max
 	return 1;
 }
 
+/* a function to add the entries to the ENTRY_SECTION */
 int add_to_entry_section(int address, char *label)
 {
 	int ret = add_to_ee_section("entry", MAIN_DATA.ENTRY_SECTION, MAIN_DATA.YC, ENTRY_SECTION_SIZE, address, label);
@@ -94,14 +96,16 @@ int add_to_entry_section(int address, char *label)
 	return ret;
 }
 
+/* a function to add the externs to the EXTERN_SECTION */
 int add_to_extern_section(int address, char *label)
 {
-	int ret = add_to_ee_section("extern", MAIN_DATA.EXTERN_SECTION, MAIN_DATA.XC, ENTRY_SECTION_SIZE, address, label);
+	int ret = add_to_ee_section("extern", MAIN_DATA.EXTERN_SECTION, MAIN_DATA.XC, EXTERN_SECTION_SIZE, address, label);
 	if (ret)
 		MAIN_DATA.XC++;
 	return ret;
 }
 
+/* for debugging */
 void print_int_array(char *name, int array[], int size)
 {
 	int i;
@@ -116,6 +120,7 @@ void print_int_array(char *name, int array[], int size)
 	}
 }
 
+/* for debugging */
 void print_e_lines_array(char *name, e_file_line* array[], int size)
 {
 	int i;

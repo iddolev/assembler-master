@@ -7,11 +7,13 @@
 
 static hash_table symbol_table;
 
+/* a function for initializing the symbol table */
 void symbol_table_init()
 {
 	init_hash_table(&symbol_table);
 }
 
+/* a function for clearing the symbol table */
 void symbol_table_clear()
 {
 	clear_hash_table(&symbol_table);
@@ -28,6 +30,7 @@ symbol_table_data *symbol_table_lookup(char *s)
 	return NULL; /* not found */
 }
 
+/* a function for checking if the label we want to add is already in the table */
 int symbol_table_add_and_verify(char *name, int address, char is_code, char is_extern, int line_num)
 {
 	int ret = symbol_table_add(name, address, is_code, is_extern);
@@ -93,6 +96,8 @@ void print_symbol_table()
 	}
 }
 
+
+/* checks if all the extern labels are used */
 int verify_extern_used()
 {
 	int i, ret = 1;

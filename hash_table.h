@@ -8,7 +8,7 @@ typedef struct hash_table_item { /* table entry */
 	void * data;
 } hash_table_item;
 
-typedef struct hash_table {
+typedef struct hash_table { /* main table */
 	hash_table_item *_data[HASH_TABLE_SIZE];
 } hash_table;
 

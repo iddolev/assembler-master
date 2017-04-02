@@ -8,14 +8,16 @@
 #include "opcodes.h"
 #include "operands.h"
 
+/* functions for the second pass */
 
+/* this is for entering the file pass function with the second pass */
 int second_pass(FILE *f)
 {
 	int ret; 
 	MAIN_DATA.DATA_OFFSET = MAIN_DATA.IC;   /* data offset = IC of end of first pass */
 	MAIN_DATA.IC = 0; /* restart the IC for the second pass */
 	ret = file_pass(f, 2);
-	if (ret)
+	if (ret) /* we check, in case the second pass succeded, if all the extern labels were used */
 		ret = verify_extern_used();
 	return ret;
 }
@@ -32,16 +34,18 @@ int data_address(int address)
 	return CODE_SECTION_OFFSET + MAIN_DATA.DATA_OFFSET + address;
 }
 
+/* returns the int number of the given register name */
 int get_register_number(char *s)
 {
 	return s[1] - '0';
 }
 
+/* returns the int number of the immediate operand given */
 int get_value_from_immediate(char *s)
 {
 	return atoi(s+1);   /* skip initial s[0] == '#' */
 }
-
+/* a function for saving the entry labels in the entry section */
 int second_pass_ee_command(INSTRUCTION_TYPE type, char *line, int line_num)
 {
 	char next_word[MAX_SYMBOL_SIZE];
@@ -50,21 +54,21 @@ int second_pass_ee_command(INSTRUCTION_TYPE type, char *line, int line_num)
 	
 	getNextToken(line, next_word);
 	s_data = symbol_table_lookup(next_word);
-	if (!s_data)
+	if (!s_data) /* if we declare an entry of a label that doesn't exist */
 	{
-		printf("ERROR on second pass: symbol '%s' missing from symbol table at line %d\n", next_word, line_num);
+		fprintf(stderr, "ERROR on second pass: symbol '%s' missing from symbol table at line %d\n", next_word, line_num);
 		return 0;
 	}
 	if (type == ENTRY)
 	{
-		if (s_data->was_used)
+		if (s_data->was_used) /* if the label was already declared as entry before */
 		{
-			printf("Warning: duplicate .entry %s statement in line %d\n", next_word, line_num);
-			return 1;   /* don't write it again in the .ent file */
+			fprintf(stderr, "Warning: duplicate .entry %s statement in line %d\n", next_word, line_num);
+			return 1;   /* don't write it again in the .ent file , return 1 cuz it's not an error, only warning */
 		}
-		if (s_data->is_extern)
+		if (s_data->is_extern) /* if we declare an entry for an extern label */
 		{
-			printf("Error in line %d: .entry for symbol %s is also declared as extern\n", line_num, next_word);
+			fprintf(stderr, "Error in line %d: .entry for symbol %s is also declared as extern\n", line_num, next_word);
 			return 0;
 		}
 		address = s_data->address;
@@ -76,6 +80,7 @@ int second_pass_ee_command(INSTRUCTION_TYPE type, char *line, int line_num)
 	return 1;
 }
 
+/* receiving a parsed operand and encode it in the suitable way */
 /* is_destination == 1 means: destination, 0 means: source */
 int process_argument(parsed_operand *operand, int is_destination, int line_num)
 {
@@ -94,7 +99,7 @@ int process_argument(parsed_operand *operand, int is_destination, int line_num)
 			symbol_data = symbol_table_lookup(operand->text);
 			if (!symbol_data)
 			{
-				printf("ERROR on second pass: symbol '%s' missing from symbol table at line %d\n", operand->text, line_num);
+				fprintf(stderr, "ERROR on second pass: symbol '%s' missing from symbol table at line %d\n", operand->text, line_num);
 				return -1;
 			}
 			if (symbol_data->is_extern)
@@ -127,12 +132,13 @@ int process_argument(parsed_operand *operand, int is_destination, int line_num)
 				encoding = encode_registers(register_number1, NOT_USED);   
 			break;
 		default:
-			printf("UNEXPECTED ERROR\n");
+			fprintf(stderr, "UNEXPECTED ERROR\n");
 			break;
 	}
 	return encoding;
 }
 
+/* collects the operands from the line and process them with the process_argument function */
 /* Assuming this is called only in second pass, only on legal input,
    so skipping all checks */
 int second_pass_process_operands(char *opcode_word, char *linep, int line_num)
@@ -149,9 +155,10 @@ int second_pass_process_operands(char *opcode_word, char *linep, int line_num)
 		add_to_code_section(encoding);
 		return 1;
 	}
-	if (!collect_operands(operands, opcode_data->group, linep, 0))
+	if (!collect_operands(operands, opcode_data->group, linep, line_num))
 	{
-		printf("Unexpected error in collect_operands\n");
+		/* should not happen because collect_operands worked correctly in first pass */
+		fprintf(stderr, "Unexpected error in collect_operands\n");
 		return 0;
 	}
 	if (opcode_data->group == 1)

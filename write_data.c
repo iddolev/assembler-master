@@ -8,22 +8,22 @@
 /* write a label and address to file (for .ent and .ext files) */
 void write_file_line(FILE *f, char *label, int address)
 {
-/*        fprintf(f, "%s\t%02X\n", label, address);  */
+        fprintf(f, "%s\t%02X\n", label, address);  
 	/* for debug: */
-	char buf[20];
+	/* char buf[20];
 	to_binary_string(address, 15, buf);
-        fprintf(f, "%s\t%02X\t%s\n", label, address, buf);
+        fprintf(f, "%s\t%02X\t%s\n", label, address, buf); */
 }
 
 /* write a an address and value to file (for .ob file) */
 void write_file_int(FILE *f, int address, int value)
 {
-/*        fprintf(f, "%02X\t%04X\n", address, value);*/
+        fprintf(f, "%02X\t%04X\n", address, value);
 
 	/* for debug: */
-	char buf[20];
+	/* char buf[20];
 	to_binary_string(value, 15, buf);
-        fprintf(f, "%02X\t%04X\t%s\n", address, value, buf);
+        fprintf(f, "%02X\t%04X\t%s\n", address, value, buf); */
 }
 
 /* write accumulated info to .ob file */

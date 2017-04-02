@@ -17,7 +17,7 @@
 /* pass_number should be 1 or 2 for first and second pass */
 int file_pass(FILE *file, int pass_number)
 {
-	int line_num = -1, symbol_flag = 0;
+	int line_num = 0, symbol_flag = 0;
 	char * linep;
 	char next_word[MAX_SYMBOL_SIZE+1]; /* +1 for terminating '\0' */
 	char label[MAX_SYMBOL_SIZE+1];
@@ -28,7 +28,7 @@ int file_pass(FILE *file, int pass_number)
 
 	while ((linep = fgets(line, MAX_LINE_LENGTH+10, file)))
 	{
-		line_num++;     /* we started with line_num == -1 */
+		line_num++;
 		symbol_flag = 0;
 		len = strlen(line);
 		if (len > MAX_LINE_LENGTH)

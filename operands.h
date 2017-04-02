@@ -1,16 +1,18 @@
 #include "defs.h"
 
-
+/* this is for checking the addressing method of an operand */
 typedef enum {IMMEDIATE=0, DIRECT=1, INDEX=2, REGISTER=3, ILLEGAL_OPERAND=-1, OTHER=-2} ADR_METHOD;
 #define ADR_METHOD_DONT_CARE 0
 #define NOT_USED 0
 
+/* this is for the binary encoding */
 typedef enum {ABSOLUTE=0, EXTERNAL=1, RELOCATABLE=2} CODING_TYPE;
 
+/* this is for checking the operands of the given command, 
+and saving all the important information about each operand */
 typedef struct {
-	char text[MAX_SYMBOL_SIZE+1];
+	char text[MAX_SYMBOL_SIZE+1]; /* the operand string */
 	ADR_METHOD addressing_method;
-	unsigned int encoded;
 } parsed_operand;
 
 

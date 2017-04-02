@@ -30,9 +30,7 @@ int valid_method_for_operand(int modeflags, ADR_METHOD method)
 	return 0; /* Just in case "method" was passed a value not in the ADR_METHOD enum */
 }
 
-
-
-
+/* for debugging */
 char * adr_method_to_string(ADR_METHOD adr_method)
 {
 	switch(adr_method)
@@ -53,6 +51,7 @@ char * adr_method_to_string(ADR_METHOD adr_method)
 	return "ILLEGAL ADR_METHOD!";
 }
 
+/* a function to check if the operand has an immediate addressing method */
 ADR_METHOD check_immediate(char * s, int line_num)
 {
 	int i = 0;
@@ -100,6 +99,7 @@ int is_register(char* s)
 	return 0;
 }
 
+/* a function to check if an operand has an index addressing method */
 ADR_METHOD check_index_method(char *s, int line_num)
 {
 	char buff[3];      /* 2 characters for register name + terminating '\0' */
@@ -109,7 +109,7 @@ ADR_METHOD check_index_method(char *s, int line_num)
 	{
 		buff[0] = s[0];
 		buff[1] = s[1];
-		buff[2] = '\0';
+		buff[2] = '\0'; /* we check the left register */
 		if (!is_register(buff))
 		{
 			fprintf(stderr, "Illegal register name \'%s\' at line %d\n", buff, line_num);
@@ -117,7 +117,7 @@ ADR_METHOD check_index_method(char *s, int line_num)
 		}
 		buff[0] = s[3];
 		buff[1] = s[4];
-		buff[2] = '\0';
+		buff[2] = '\0'; /* we check the right register */
 		if (!is_register(buff))
 		{
 			fprintf(stderr, "Illegal register name \'%s\' at line %d\n", buff, line_num);
@@ -131,7 +131,7 @@ ADR_METHOD check_index_method(char *s, int line_num)
 			    return INDEX;
 			}
 		}
-		fprintf(stderr, "For index addressing method - left register must be odd and right register must be even - at line %d\n", line_num); 
+		fprintf(stderr, "At line %d - for index addressing method - left register must be odd and right register must be even\n", line_num); 
 		return ILLEGAL_OPERAND;
 	}
 	return OTHER;
@@ -143,6 +143,8 @@ ADR_METHOD get_addressing_method(char *s, int line_num)
 	ADR_METHOD adressing_method;	
 
 	adressing_method = check_immediate(s, line_num);
+	/* if the function called returned error or success, than we should return it, 
+	else, if it returned OTHER, we should continue and check other possibilities */
 	if (adressing_method == IMMEDIATE || adressing_method == ILLEGAL_OPERAND)
 	{
 		return adressing_method;
@@ -217,9 +219,10 @@ int collect_operands(parsed_operand operands[], int expected_num_operands, char 
 	return 1;
 }
 
+/* a function for encoding the main code word in each line to binary */
 int encode_command(int group, int opcode, ADR_METHOD src, ADR_METHOD dst)
 {
-	int encoding = 0;
+	int encoding = 0; /* encoding = the veriable that saves the binary code of the word */
 	
 	encoding = push_to_encoding(encoding, 3, 7);         /* constant 111 in binary */
 	encoding = push_to_encoding(encoding, 2, group);
@@ -230,6 +233,7 @@ int encode_command(int group, int opcode, ADR_METHOD src, ADR_METHOD dst)
 	return encoding;
 }
 
+/* a function for encoding register operands. If one of the two registers is not used, he will be encoded to 0 */
 int encode_registers(int register1, int register2)
 {
 	int encoding = 0;
@@ -239,6 +243,7 @@ int encode_registers(int register1, int register2)
 	return encoding;
 }
 
+/* a function to encode an operand according to his coding type (absolute, relocatable, extern) except from registers (see function above) */
 int encode_argument(CODING_TYPE coding_type, int value)
 {
 	int encoding = 0;

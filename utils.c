@@ -39,7 +39,7 @@ int isalpha_string(char* string)
 	return 1;
 }
 
-/* a simplyfied function. there is no need to check for whitespaces, because 'getNextToken' does that */
+/* checks if the given string is a number */
 int is_number(char* str)
 {
 	int i = 1; /* we check index 0 in the second "if" below */
@@ -62,7 +62,7 @@ int is_number(char* str)
 	return 0;
 }
 
-/* return 1 if char is a whitespace, otherwise 0 */
+/* returns 1 if char is a whitespace, otherwise 0 */
 int is_whitespace(char c)
 {
 	return c == ' ' || c == '\t';
@@ -76,14 +76,14 @@ int c_atoi(char c)
 	return c - '\0';  
 }
 
-/* Check if char c is a token separator */
+/* Checks if char c is a token separator */
 int is_separator(char c) 
 {
 	return is_end_char(c) || c == ':'  || c == ',';
 }
 
-/* Read next word from linep into buffer.
-   Return pointer to next position in linep.  */
+/* Reads next word from linep into buffer.
+   Returns pointer to next position in linep.  */
 char * getNextToken(char * linep, char * buffer)
 {
 	int j = 0;
@@ -115,6 +115,7 @@ int is_end_char(char c)
 	return c == '\0' || c == '\n';
 }
 
+/* a function for veryfying if there isn't anything more after the line we checked */
 int verifyEndOfLine(char * linep)
 {
 	while (!is_end_char(*linep))
