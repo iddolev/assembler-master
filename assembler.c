@@ -14,7 +14,6 @@
 void run_on_file(char *file_name)
 {
 	FILE *f;
-	int errors; /* a veriable to indicate errors */
 	char full_name[MAX_FILE_NAME_SIZE];
 	int success;
 	
@@ -26,9 +25,9 @@ void run_on_file(char *file_name)
 	printf("Processing file: %s\n", full_name);
 	if ((f = open_file(full_name, "r")))
 	{
-		errors = first_pass(f); /* calling to file pass with a flag for the first pass */
+		success = first_pass(f); /* calling to file pass with a flag for the first pass */
 		fclose(f);
-		if (errors > 0)
+		if (!success)
 		{
 			fprintf(stderr, "Encountered errors in first pass, so not doing second pass: %s\n", full_name);
 		}

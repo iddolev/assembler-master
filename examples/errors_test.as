@@ -11,7 +11,6 @@ clr #+2
 .string "abc
 .string "hello" world
 .data 1000000
-prn #1000000
 sub #,r1
 prn #1a
 bne: stop

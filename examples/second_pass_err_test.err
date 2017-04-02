@@ -1,0 +1,7 @@
+Warning: duplicate .entry K statement in line 2
+ERROR on second pass: symbol 'H' missing from symbol table at line 4
+At line 5: Cannot encode the value 1000000 into only 13 bits (complement-2)
+Error in line 8: .entry for symbol M is also declared as extern
+ERROR on second pass: symbol 'X' missing from symbol table at line 10
+The extern symbol 'W' is not used
+Error during second pass, so not writing output files: examples/second_pass_err_test.as

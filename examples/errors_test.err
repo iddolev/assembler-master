@@ -1,0 +1,26 @@
+Warning: Ignoring label before extern/entry instruction at line 1
+Illegal or no content after label in line 2
+Missing ':' after label in line 3
+Symbol B in line 4 already appeared previously
+Line 5: invalid opcode '&'
+Illegal register name 'r8' at line 6
+Illegal or no content after label in line 7
+Incompatible addressing method for operand at line 8
+Missing oprands for '.data' at line 9 
+At line 10 illegal operand "a" for '.data' 
+Missing end quote character at .string line 11
+Illegal characters after end quote at .string line 12
+At line 13: Cannot encode the value 1000000 into only 15 bits (complement-2)
+Missing digits after '#' at line 15
+Illegal operand after '#' at line 16
+At line 17: Illegal label name: bne
+At line 18 illegal symbol name 
+Line number 19 is too long 
+At line 20 symbol name is too long 
+Missing operand at line 21
+At line 22 - for index addressing method - left register must be odd and right register must be even
+Line 23: No operands should appear after opcode 'stop'
+At line 24 illegal content after last expected operand
+Missing comma between operands at line 25 
+Unsuitable number of operands at line 26 
+Encountered errors in first pass, so not doing second pass: examples/errors_test.as
