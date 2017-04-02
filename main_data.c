@@ -5,7 +5,7 @@
 #include "utils.h"
 
 
-main_data MAIN_DATA;
+main_data MAIN_DATA;   /* global variable that will be used as extern in other .c files */
 
 /* a function to initialize the data */
 void init_main_data()
