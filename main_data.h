@@ -1,5 +1,6 @@
 #include "defs.h"
 
+/* struct for a line in .ent and .ext files */
 typedef struct e_file_line {
 	int address;
 	char label[MAX_SYMBOL_SIZE];
@@ -28,7 +29,7 @@ void reset_main_data();
 void print_main_data();
 
 int add_to_data_section(int value, int line_num);
-int add_to_code_section(int value);
+int add_to_code_section(int value, int line_num);
 int add_to_entry_section(int address, char *label);
 int add_to_extern_section(int address, char *label);
 

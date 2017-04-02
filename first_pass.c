@@ -17,7 +17,7 @@ int first_pass(FILE *f)
 	return file_pass(f, 1);
 }
 
-
+/* handles .data and .string instructions */
 int first_pass_data_command(INSTRUCTION_TYPE type, char *linep, int line_num)
 {
 	int result;
