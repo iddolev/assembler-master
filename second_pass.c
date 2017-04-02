@@ -13,13 +13,12 @@
 /* this is for entering the file pass function with the second pass */
 int second_pass(FILE *f)
 {
-	int ret; 
-	MAIN_DATA.DATA_OFFSET = MAIN_DATA.IC;   /* data offset = IC of end of first pass */
+	int ret1, ret2; 
+	MAIN_DATA.DATA_OFFSET = MAIN_DATA.IC; /* data offset = IC of end of first pass */
 	MAIN_DATA.IC = 0; /* restart the IC for the second pass */
-	ret = file_pass(f, 2);
-	if (ret) /* we check, in case the second pass succeded, if all the extern labels were used */
-		ret = verify_extern_used();
-	return ret;
+	ret1 = file_pass(f, 2);
+	ret2 = verify_extern_used(); /* we check if all the extern labels were used */
+	return ret1 && ret2; /* success is only if ret1 and ret2 succeded */
 }
 
 /* Address is from first pass (starting from 0). Return the offset address for the final code section */

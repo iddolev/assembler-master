@@ -42,4 +42,6 @@ examples/*.ent
 .kdev4
 *.kdev4
 *.txt
+*.*~
+examples/*.*~
 
