@@ -11,16 +11,16 @@ At line 10 illegal operand "a" for '.data'
 Missing end quote character at .string line 11
 Illegal characters after end quote at .string line 12
 At line 13: Cannot encode the value 1000000 into only 15 bits (complement-2)
-Missing digits after '#' at line 15
-Illegal operand after '#' at line 16
-At line 17: Illegal label name: bne
-At line 18 illegal symbol name 
-Line number 19 is too long 
-At line 20 symbol name is too long 
-Missing operand at line 21
-At line 22 - for index addressing method - left register must be odd and right register must be even
-Line 23: No operands should appear after opcode 'stop'
-At line 24 illegal content after last expected operand
-Missing comma between operands at line 25 
-Unsuitable number of operands at line 26 
+Missing digits after '#' at line 14
+Illegal operand after '#' at line 15
+At line 16: Illegal label name: bne
+At line 17 illegal symbol name 
+Line number 18 is too long 
+At line 19 symbol name is too long 
+Missing operand at line 20
+At line 21 - for index addressing method - left register must be odd and right register must be even
+Line 22: No operands should appear after opcode 'stop'
+At line 23 illegal content after last expected operand
+Missing comma between operands at line 24 
+Unsuitable number of operands at line 25 
 Encountered errors in first pass, so not doing second pass: examples/errors_test.as

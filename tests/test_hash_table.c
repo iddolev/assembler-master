@@ -31,15 +31,10 @@ int main() {
     d = (data*) np->data;
     printf("Lookup after insertion: %d %s (should be 5 abc)\n", d->value, d->str);
     np = NULL;
-
     d = (data*) malloc(sizeof(data));
     d->value = 6;
     strcpy(d->str, "def");
     np = hash_table_add(table, "foo", d);
-    d = (data*) np->data;
-    printf("Replacement: %d %s (should be 6 def)\n", d->value, d->str);
-    np = hash_table_lookup(table, "foo");
-    d = (data*) np->data;
-    printf("Lookup after replacement: %d %s (should be 6 def)\n", d->value, d->str);
+    printf("Lookup should fail: np==NULL? %d\n", (np==NULL));
     return 0;
 }
