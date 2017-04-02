@@ -233,7 +233,8 @@ int encode_command(int group, int opcode, ADR_METHOD src, ADR_METHOD dst)
 	return encoding;
 }
 
-/* a function for encoding register operands. If one of the two registers is not used, he will be encoded to 0 */
+/* a function for encoding register operands. 
+   (If one of the two registers is not used, it will be encoded to 0) */
 int encode_registers(int register1, int register2)
 {
 	int encoding = 0;
@@ -243,7 +244,8 @@ int encode_registers(int register1, int register2)
 	return encoding;
 }
 
-/* a function to encode an operand according to his coding type (absolute, relocatable, extern) except from registers (see function above) */
+/* a function to encode an operand according to its coding type (absolute, relocatable, extern) 
+  except for registers (see function above) */
 int encode_argument(CODING_TYPE coding_type, int value, int line_num)
 {
 	int encoding = 0;

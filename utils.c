@@ -151,6 +151,8 @@ int push_to_encoding(int current, int num_bits, int to_add)
 	return result;
 }
 
+/* encodes the value using num_bits in complement-2 representation.
+   Returns -1 if not possible */
 int encode_in_binary_complement2(int value, int num_bits, int line_num)
 {
 	int max, mask;
