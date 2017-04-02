@@ -1,5 +1,6 @@
 #include "defs.h"
 
+/* struct for a line in .ent and .ext files */
 typedef struct e_file_line {
 	int address;
 	char label[MAX_SYMBOL_SIZE];
