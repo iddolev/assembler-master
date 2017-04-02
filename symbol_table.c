@@ -97,7 +97,7 @@ void print_symbol_table()
 }
 
 
-/* checks if all the extern labels are used */
+/* checks if all the extern labels are marked as used */
 int verify_extern_used()
 {
 	int i, ret = 1;
