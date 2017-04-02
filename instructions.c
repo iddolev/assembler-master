@@ -103,6 +103,7 @@ int process_data_instruction(char * linep, int line_num)
 				linep++;
 			}
 		}
+	fprintf(stderr, "Unexpected error at line %d \n", line_num);
 	return 0;	
 }
 

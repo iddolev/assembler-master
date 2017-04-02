@@ -46,10 +46,19 @@ int file_pass(FILE *file, int pass_number)
 		{
 			continue; /*need to ignore blank lines and comment lines*/
 		}
+		
+		if (verifyEndOfLine(linep))
+			continue;	
 
 		linep = getNextToken(linep, next_word);
-		
-		if (!linep || next_word[0] ==';' || is_end_char(*linep))
+
+		if (!linep)
+		{
+			fprintf(stderr, "Unexpected error at line %d \n", line_num);
+			continue;
+		}
+
+		if (next_word[0] ==';')
 			continue;
 		
 		op_type = is_label(next_word, line_num);

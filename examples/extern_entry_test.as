@@ -1,0 +1,3 @@
+.extern W
+.entry W
+
