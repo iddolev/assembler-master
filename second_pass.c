@@ -151,8 +151,7 @@ int second_pass_process_operands(char *opcode_word, char *linep, int line_num)
 	if (opcode_data->group == 0)
 	{
 		encoding = encode_command(opcode_data->group, opcode_data->opcode, ADR_METHOD_DONT_CARE, ADR_METHOD_DONT_CARE);
-		add_to_code_section(encoding);
-		return 1;
+		return add_to_code_section(encoding, line_num);
 	}
 	if (!collect_operands(operands, opcode_data->group, linep, line_num))
 	{
@@ -164,20 +163,21 @@ int second_pass_process_operands(char *opcode_word, char *linep, int line_num)
 	{
                 dstAdr = operands[0].addressing_method;
 		encoding = encode_command(opcode_data->group, opcode_data->opcode, ADR_METHOD_DONT_CARE, dstAdr);
-		add_to_code_section(encoding);
+		if (!add_to_code_section(encoding, line_num))
+			return 0;
 
 		encoding = process_argument(&(operands[0]), 1, line_num);    /* 1 = is destination */
 		if (encoding == -1)    /* error */
 			return 0;   
-		add_to_code_section(encoding);
-		return 1;
+		return add_to_code_section(encoding, line_num);
 	}
 	else if (opcode_data->group == 2)
 	{
                 srcAdr = operands[0].addressing_method;
                 dstAdr = operands[1].addressing_method;
 		encoding =  encode_command(opcode_data->group, opcode_data->opcode, srcAdr, dstAdr);
-		add_to_code_section(encoding);
+		if (!add_to_code_section(encoding, line_num))
+			return 0;
 
 		if (srcAdr == REGISTER && dstAdr == REGISTER)
 		{
@@ -186,20 +186,20 @@ int second_pass_process_operands(char *opcode_word, char *linep, int line_num)
 			encoding = encode_registers(register_number1, register_number2);  
 			if (encoding == -1)    /* error */
 				return 0;   
-			add_to_code_section(encoding);
+			return add_to_code_section(encoding, line_num);
 		}
 		else
 		{
 			encoding = process_argument(&(operands[0]), 0, line_num);    /* 0 = is source */
 			if (encoding == -1)    /* error */
 				return 0;   
-			add_to_code_section(encoding);
+			if (!add_to_code_section(encoding, line_num))
+				return 0;
 			encoding = process_argument(&(operands[1]), 1, line_num);    /* 1 = is destination */
 			if (encoding == -1)    /* error */
 				return 0;   
-			add_to_code_section(encoding);
+			return add_to_code_section(encoding, line_num);
 		}
-		return 1;
 	}
 
 	return 0;   /* should not be reached */
