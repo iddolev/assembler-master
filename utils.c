@@ -151,7 +151,7 @@ int push_to_encoding(int current, int num_bits, int to_add)
 	return result;
 }
 
-int encode_in_binary_complement2(int value, int num_bits)
+int encode_in_binary_complement2(int value, int num_bits, int line_num)
 {
 	int max, mask;
 
@@ -164,7 +164,7 @@ int encode_in_binary_complement2(int value, int num_bits)
 		max = 1 << (num_bits-1);
 		if (value >= max)
 		{
-			fprintf(stderr, "Cannot encode the value %d into only %d bits (complement-2)\n", value, num_bits);
+			fprintf(stderr, "At line %d: Cannot encode the value %d into only %d bits (complement-2)\n", line_num, value, num_bits);
 			return -1;   /* this is -1 (i.e. all 1 in binary) of *int*, which we assume has many more bits than num_bits  */
 		}
 	}
@@ -177,7 +177,7 @@ int encode_in_binary_complement2(int value, int num_bits)
 					Its absolute value, (-value) is == max.
 					So if -value > max we have an error */
 		{
-			fprintf(stderr, "Cannot encode the value %d into only %d bits (complement-2)\n", value, num_bits);
+			fprintf(stderr, "At line %d: Cannot encode the value %d into only %d bits (complement-2)\n", line_num, value, num_bits);
 			return -1;
 		}
 

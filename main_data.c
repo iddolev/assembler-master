@@ -33,17 +33,17 @@ void reset_main_data()
 }
 
 /* a function to add data to the data section and update the DC */
-int add_to_data_section(int value)
+int add_to_data_section(int value, int line_num)
 {
 	int encoded_value;
 
 	if (MAIN_DATA.DC >= DATA_SECTION_SIZE)
 	{
-		fprintf(stderr, "Error: Too many data items\n");
+		fprintf(stderr, "Error line %d: Too many data items\n", line_num);
 		return 0;
 	}
 
-	encoded_value = encode_in_binary_complement2(value, DATA_VALUE_NUMBER_OF_BITS);
+	encoded_value = encode_in_binary_complement2(value, DATA_VALUE_NUMBER_OF_BITS, line_num);
 	if (encoded_value == -1)
 		return 0;   /* error flag */
 

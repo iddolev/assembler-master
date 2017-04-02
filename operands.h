@@ -31,6 +31,6 @@ int valid_method_for_operand(int modeflags, ADR_METHOD method);
 
 int encode_command(int group, int opcode, ADR_METHOD src, ADR_METHOD dst);
 int encode_registers(int register1, int register2);
-int encode_argument(CODING_TYPE coding_type, int value);
+int encode_argument(CODING_TYPE coding_type, int value, int line_num);
 
 

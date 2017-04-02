@@ -244,10 +244,10 @@ int encode_registers(int register1, int register2)
 }
 
 /* a function to encode an operand according to his coding type (absolute, relocatable, extern) except from registers (see function above) */
-int encode_argument(CODING_TYPE coding_type, int value)
+int encode_argument(CODING_TYPE coding_type, int value, int line_num)
 {
 	int encoding = 0;
-	int encoded_value = encode_in_binary_complement2(value, IMMEDIATE_VALUE_NUMBER_OF_BITS);
+	int encoded_value = encode_in_binary_complement2(value, IMMEDIATE_VALUE_NUMBER_OF_BITS, line_num);
 	if (encoded_value == -1)
 		return -1;   /* error flag */
 

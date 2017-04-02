@@ -92,7 +92,7 @@ int process_argument(parsed_operand *operand, int is_destination, int line_num)
 	{
 		case IMMEDIATE:
 			value = get_value_from_immediate(operand->text);
-			encoding = encode_argument(ABSOLUTE, value);  
+			encoding = encode_argument(ABSOLUTE, value, line_num);  
 			break;
 		case DIRECT:
 			symbol_data = symbol_table_lookup(operand->text);
@@ -103,7 +103,7 @@ int process_argument(parsed_operand *operand, int is_destination, int line_num)
 			}
 			if (symbol_data->is_extern)
 			{
-				encoding = encode_argument(EXTERNAL, NOT_USED);
+				encoding = encode_argument(EXTERNAL, NOT_USED, line_num);
 				/* In addition, we need to add the address IC to the extern file with this extern symbol */
 				address = code_address(MAIN_DATA.IC);
 				add_to_extern_section(address, operand->text);
@@ -111,11 +111,11 @@ int process_argument(parsed_operand *operand, int is_destination, int line_num)
 			}
 			else if (symbol_data->is_code)
 			{
-				encoding = encode_argument(RELOCATABLE, code_address(symbol_data->address)); 
+				encoding = encode_argument(RELOCATABLE, code_address(symbol_data->address), line_num); 
 			}
 			else /* symbol is of .data or .string line */
 			{
-				encoding = encode_argument(RELOCATABLE, data_address(symbol_data->address)); 
+				encoding = encode_argument(RELOCATABLE, data_address(symbol_data->address), line_num); 
 			}
 			break;
 		case INDEX:

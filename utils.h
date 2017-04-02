@@ -27,7 +27,7 @@ int verifyEndOfLine(char * linep);
    result = 00001101
 */
 int push_to_encoding(int current, int to_add, int num_bits);
-int encode_in_binary_complement2(int value, int num_bits);
+int encode_in_binary_complement2(int value, int num_bits, int line_num);
 
 void to_binary_string(int value, int num_bits, char buffer[]);
 void encoding_to_str(int encoding, int sizes[], int length, char output[]);

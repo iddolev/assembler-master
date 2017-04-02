@@ -72,9 +72,8 @@ int process_data_instruction(char * linep, int line_num)
 			{
 				/* if there are to many numbers for the .data command and there is no more space in the data section, return error */
 				/* else add to data section and update MAIN_DATA.DC */
-				if (!add_to_data_section(atoi(nextWord)))
+				if (!add_to_data_section(atoi(nextWord), line_num))
 				{
-					fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
 					return 0;
 				}
 			}
@@ -124,16 +123,14 @@ int process_string_instruction(char * linep, int line_num)
 		while(!is_end_char(*linep) && *linep != '"') /* scan it without the " " characters */
 		{
 			ascii_code = *linep;
-			if (!add_to_data_section(ascii_code))
+			if (!add_to_data_section(ascii_code, line_num))
 			{
-				fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
 				return 0;
 			}
 			linep++;
 		}
-		if (!add_to_data_section(0))   /* null terminating the string */
+		if (!add_to_data_section(0, line_num))   /* null terminating the string */
 		{
-			fprintf(stderr, "At line %d exceeded maximal number of data elements \n", line_num);
 			return 0;
 		}
 		if (*linep != '"') /* the string should end with a - " */
