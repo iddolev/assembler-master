@@ -72,15 +72,17 @@ int second_pass_ee_command(INSTRUCTION_TYPE type, char *line, int line_num)
 		}
 		address = s_data->address;
 		address = s_data->is_code ? code_address(address) : data_address(address);
-		add_to_entry_section(address, next_word);
+		if (!add_to_entry_section(address, next_word))
+			return 0;
 		s_data->was_used = 1;   /* so that we won't write it again in the .ent file if duplicate .entry statement */
 	}
 	/* if type == EXTERN -- nothing to do in second pass */
 	return 1;
 }
 
-/* receiving a parsed operand and encode it in the suitable way */
-/* is_destination == 1 means: destination, 0 means: source */
+/* receiving a parsed operand and encode it in the suitable way.
+   is_destination == 1 means: destination, 0 means: source.
+   if failure, returns -1 */
 int process_argument(parsed_operand *operand, int is_destination, int line_num)
 {
 	symbol_table_data* symbol_data;
@@ -106,7 +108,8 @@ int process_argument(parsed_operand *operand, int is_destination, int line_num)
 				encoding = encode_argument(EXTERNAL, NOT_USED, line_num);
 				/* In addition, we need to add the address IC to the extern file with this extern symbol */
 				address = code_address(MAIN_DATA.IC);
-				add_to_extern_section(address, operand->text);
+				if (!add_to_extern_section(address, operand->text))
+					return -1;
 				symbol_data->was_used = 1;
 			}
 			else if (symbol_data->is_code)
