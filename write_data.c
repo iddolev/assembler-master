@@ -5,6 +5,8 @@
 #include "externs.h"
 #include "utils.h"
 
+/* functions for writing the code, data, entry, extern sections to files */
+
 /* write a label and address to file (for .ent and .ext files) */
 void write_file_line(FILE *f, char *label, int address)
 {
