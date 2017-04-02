@@ -39,7 +39,7 @@ int add_to_data_section(int value, int line_num)
 
 	if (MAIN_DATA.DC >= DATA_SECTION_SIZE)
 	{
-		fprintf(stderr, "Error line %d: Too many data items\n", line_num);
+		fprintf(stderr, "Error at line %d: Too many data items\n", line_num);
 		return 0;
 	}
 
@@ -52,11 +52,11 @@ int add_to_data_section(int value, int line_num)
 }
 
 /* a function to add code to the code section and update the IC */
-int add_to_code_section(int value)
+int add_to_code_section(int value, int line_num)
 {
 	if (MAIN_DATA.IC >= CODE_SECTION_SIZE)
 	{
-		fprintf(stderr, "Error: Too many code lines\n");
+		fprintf(stderr, "Error at line %d: Too many code lines\n", line_num);
 		return 0;
 	}
 	MAIN_DATA.CODE_SECTION[MAIN_DATA.IC++] = value;
